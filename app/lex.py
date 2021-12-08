@@ -1,7 +1,7 @@
 from typing import NamedTuple
 import re, os
 
-os.chdir('bind')                                                          # Getting tokens
+os.chdir('app')                                                          # Getting tokens
 with open("tokens/rwords.txt") as f:
   rwords = f.read()
   rwords= list(item for item in rwords.split('\n') if item.strip())
