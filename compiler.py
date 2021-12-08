@@ -14,9 +14,9 @@ print("LEXEME\t\t\t\tTOKEN")
 for token in lex.tokenize(expression):
   print(str(token.value)+"\t\t\t\t"+str(token.type))
 
-errors = []
-errors = token.errors
+error = []
+error = token.error
 
-for i in errors:
+for i in error:
   print(i)
 
