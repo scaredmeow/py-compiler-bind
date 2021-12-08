@@ -1,12 +1,8 @@
-import lex_analyzer as lex
+import bind.lex as lex
 import sys
 
 print("Enter Expression: ")
 expression = sys.stdin.read()
-
-print("LEXEME\t\t\t\tTOKEN")
-
-errors = []
 
 # expression = '''
 # int a,b
@@ -14,9 +10,11 @@ errors = []
 # as
 # '''
 
+print("LEXEME\t\t\t\tTOKEN")
 for token in lex.tokenize(expression):
-  print(str(token.value)+"\t\t"+str(token.type))
+  print(str(token.value)+"\t\t\t\t"+str(token.type))
 
+errors = []
 errors = token.errors
 
 for i in errors:
