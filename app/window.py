@@ -6,7 +6,6 @@ from tkinter import Canvas
 from tkinter import Button
 from tkinter import constants
 
- 
 def run_lex():                                  # Run Lexical Analyzer
     inputValue = inputPane.get("1.0","end-1c")
     lex = compiler.lexer(inputValue)
