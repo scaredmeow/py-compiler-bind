@@ -1,4 +1,3 @@
 import os
 
-
-os.system('python app/window.py')
+os.system(f'python app/window.py')

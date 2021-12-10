@@ -17,12 +17,11 @@ def run_lex():                                  # Run Lexical Analyzer
 def print_lex(type,value):                      # Print Text to Lexical Pane
     lexPane.config(state="normal")
     lexPane.delete('1.0', constants.END)
-    lexPane.insert(constants.END,"LEXEME\t\t\t\tTOKEN\n")
-    # a = len(type)
-    # print(a)
-    # while a != -1:
+    lexPane.insert(constants.END,"LEXEME\t\t\t\tTOKEN\n\n")
     for i in range(len(type)):
-        lexPane.insert(constants.END,f'{type[i]}\t\t\t\t{value[i]}\n')
+        lexPane.insert(constants.END,f'{str(value[i]) if len(str(value[i]))<=15 else str(value[i])[:10] + "..."}\t\t\t\t{str(type[i])}\n')
+        # lexPane.insert(constants.END,f'{"" if type(value[i]) == int else ("" if True else "") }'
+        #                              f'\t\t\t\t{str(type[i])}\n')
 
 
 def print_error(error):                      # Print Text to Error Pane
@@ -30,7 +29,7 @@ def print_error(error):                      # Print Text to Error Pane
     errorPane.delete('1.0', constants.END)
     for error in error:
         if error != '':
-            errorPane.insert(constants.END,f'{error}')
+            errorPane.insert(constants.END,f'{error}\n')
         else:
             continue
 
@@ -47,10 +46,10 @@ def refresh():
 window = Tk()
 
 window.geometry("939x617")
-window.configure(bg = "#211b36")
+window.configure(bg = "#251c3b")
 canvas = Canvas(
     window,
-    bg = "#211b36",
+    bg = "#251c3b",
     height = 617,
     width = 939,
     bd = 0,
@@ -65,7 +64,7 @@ inputPane_bg = canvas.create_image(
 
 inputPane = Text(
     bd = 0,
-    bg = "#261d3d",
+    bg = "#2a2247",
     highlightthickness = 0,
     fg = "white",
     padx = 10,
@@ -84,13 +83,13 @@ lexPane_bg = canvas.create_image(
 
 lexPane = Text(
     bd = 0,
-    bg = "#261d3d",
+    bg = "#2a2247",
     highlightthickness = 0,
     fg = "white",
     padx = 10,
     pady = 10,
     font = ("Consolas",10),
-    )
+    state="disabled",)
 
 lexPane.place(
     x = 568, y = 110,
@@ -104,15 +103,13 @@ errorPane_bg = canvas.create_image(
 
 errorPane = Text(
     bd = 0,
-    bg = "#261d3d",
+    bg = "#2a2247",
     highlightthickness = 0,
     fg = "white",
     padx = 10,
     pady = 10,
     font = ("Consolas",10),
-    )
-
-errorPane.grid(row=0, column=0, sticky='ew')
+    state="disabled",)
 
 errorPane.place(
     x = 26, y = 445,
@@ -124,49 +121,49 @@ background = canvas.create_image(
     469.5, 48.5,
     image=background_img)
 
-img0 = PhotoImage(file = f"img/img0.png")
-b0 = Button(
+img0 = PhotoImage(file = f"img/img0.png")            # Run Lexical Analyzer Button
+lexButton = Button(
     image = img0,
     borderwidth = 0,
     highlightthickness = 0,
     command = run_lex,
     relief = "flat",
+    background= "#211b36",
     activebackground = "#211b36")
 
-b0.place(
-    x = 21, y = 52,
-    width = 179,
+lexButton.place(
+    x = 13, y = 52,
+    width = 180,
     height = 30)
 
-img1 = PhotoImage(file = f"img/img1.png")
-b1 = Button(
+img1 = PhotoImage(file = f"img/img1.png")            # Run Semantic Analyzer Button
+semButton = Button(
     image = img1,
     borderwidth = 0,
     highlightthickness = 0,
     relief = "flat",
+    background= "#211b36",
     activebackground = "#211b36")
 
-b1.place(
-    x = 214, y = 52,
-    width = 202,
+semButton.place(
+    x = 200, y = 52,
+    width = 200,
     height = 30)
 
-img2 = PhotoImage(file = f"img/img2.png")
+img2 = PhotoImage(file = f"img/img2.png")            # Bind Button
 b2 = Button(
     image = img2,
     borderwidth = 0,
     highlightthickness = 0,
-    relief = "flat",
-    background= "#099FD1",
     command = refresh,
+    relief = "flat",
+    background = "#099FD1",
     activebackground = "#099FD1")
 
 b2.place(
-    x = 15, y = 6,
-    width = 72,
+    x = 20, y = 6,
+    width = 100,
     height = 33)
-
-
 
 window.resizable(False, False)
 window.title("Bind Compiler")
