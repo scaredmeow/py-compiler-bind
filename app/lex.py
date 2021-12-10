@@ -23,8 +23,8 @@ def tokenize(code):
   token_specification = [
     ('number',        r'!?\d+\.?\d*'),                                    # Integer or decimal number
     ('id',            r'[a-z][0-9a-zA-Z_]*'),                                # Identifiers
-    ('char_literal',  r'\'[ -~]+\'?'),                                       # Char          (\\\\)(\\\')(\\\")(\\\?) 
-    ('str_literal',   r'\"[ -~]+\"?'),                                  # Str
+    ('char_literal',  r'\'[ -~]+\'??'),                                       # Char          (\\\\)(\\\')(\\\")(\\\?) 
+    ('str_literal',   r'\"[ -!#-~]+\"?'),                                  # Str
     # ('symbols',       r'[ -~]+'),                                         # Symbols first 127 
     ('comment',       r'#[ -~]+'),
     # ('separator'      r''),
@@ -66,7 +66,7 @@ def tokenize(code):
           idno = idkey[value]
 #----------------------------------------------------------------------------------------------------------
     elif kind == 'char_literal':                                          # Character
-      if re.search(r'(\'\\\'\')|(\'[ -&\(-\[\]-~]\')',value):                                 # FIX
+      if re.search(r'(\'\\\'\')|(\'[ -&\(-\[\]-~]\'$)',value):                                 # FIX
         if re.search(r'\'[ -&\(-\[\]-~]\'',value):value = str(value[1])  
         else: value = str(value[2]) 
       elif re.search(r'[ -&\(-~]$',value):
@@ -78,10 +78,10 @@ def tokenize(code):
 #----------------------------------------------------------------------------------------------------------
     elif kind == 'str_literal':                                     # String
       if (len(value)-2 > 1 if re.search(r'\"$',value) else len(value)-1):
-        if re.search(r'(\"[ -!#-\[\]-~]*(\\\")+[ -!#-\[\]-~]*\")|(\"[ -!#-\[\]-~][ -!#-\[\]-~]+\")',value):                                 # FIX
+        if re.search(r'(\"[ -!#-\[\]-~]*?(\\\")+?[ -!#-\[\]-~]*?\"$)|(\"[ -!#-\[\]-~][ -!#-\[\]-~]+?\"$)',value):                                 # FIX
           if re.search(r'\"[ -!#-\[\]-~]*(\\\")+[ -!#-\[\]-~]*\"',value): 
             value = value.replace("\\\"","\"")
-            value = str(value[1:len(value)-1])
+          value = str(value[1:len(value)-1])
         elif re.search(r'[ -!#-~]$',value):
           kind = 'lex-error'
           error.append(f'Lexical Error Ln {line_num}, Col {column}): String literal is unterminated')
@@ -118,7 +118,7 @@ def tokenize(code):
         error.append(f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded in right handside \na max length of 9, you inputted {len(value) - length - 1} digits')
         kind = 'lex-error'                                                # Lex Error - Deci_literal - Right handside
       else:
-        error.append(f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded a max length of 18, \nyou inputted {len(value)-2 if "1" in value else len(value)-1} digits')
+        error.append(f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded a max length of 18,\nyou inputted {len(value)-2 if "1" in value else len(value)-1} digits')
         kind = 'lex-error'                                                # Lex Error - Deci_literal
 #----------------------------------------------------------------------------------------------------------             
     elif kind == 'newline':
