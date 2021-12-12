@@ -19,9 +19,12 @@ def print_lex(type,value):                      # Print Text to Lexical Pane
     lexPane.delete('1.0', constants.END)
     lexPane.insert(constants.END,"LEXEME\t\t\t\tTOKEN\n\n")
     for i in range(len(type)):
-        lexPane.insert(constants.END,f'{str(value[i]) if len(str(value[i]))<=15 else str(value[i])[:10] + "..."}\t\t\t\t{str(type[i])}\n')
-        # lexPane.insert(constants.END,f'{"" if type(value[i]) == int else ("" if True else "") }'
-        #                              f'\t\t\t\t{str(type[i])}\n')
+        if type == 'lex-error':
+            continue
+        else:
+            lexPane.insert(constants.END,f'{str(value[i]) if len(str(value[i]))<=15 else str(value[i])[:10] + "..."}\t\t\t\t{str(type[i])}\n')
+            # lexPane.insert(constants.END,f'{"" if type(value[i]) == int else ("" if True else "") }'
+            #                              f'\t\t\t\t{str(type[i])}\n')
 
 
 def print_error(error):                      # Print Text to Error Pane
