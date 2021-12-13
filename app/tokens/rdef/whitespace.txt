@@ -1,0 +1,11 @@
+false
+bool
+char
+const
+deci
+int
+plant
+ret
+str
+true
+vote

@@ -3,7 +3,7 @@ import re, os
 
 #----------------------------------------------------------------------------------------------------------
 os.chdir('app')                                                           # Getting tokens
-with open("tokens/rwords.txt") as f:
+with open("tokens/rword.txt") as f:
   rwords = f.read()
   rwords= list(item for item in rwords.split('\n') if item.strip())
 with open("tokens/rsymbol.txt") as f:
@@ -15,30 +15,29 @@ class Token(NamedTuple):
   value: str
   line: int
   column: int
-  error: list
+  error: str
 #----------------------------------------------------------------------------------------------------------
 def tokenize(code):
   keywords = rwords
   reserve_symbol = rsymbol
   token_specification = [
-    ('number',        r'!?\d+\.?\d*'),                                    # Integer or decimal number
+    ('number',        r'!?\d+\.?\d*'),                                     # Integer or decimal number
     ('id',            r'[a-z][0-9a-zA-Z_]*'),                                # Identifiers
     ('char_literal',  r'\'[ -~]+\'??'),                                       # Char          (\\\\)(\\\')(\\\")(\\\?) 
     ('str_literal',   r'\"[ -!#-~]+\"?'),                                  # Str
-    # ('symbols',       r'[ -~]+'),                                         # Symbols first 127 
+    ('symbols',       r'[%-&\(-\-\/-\?\[\]\^\{\}]+'),                                         # Symbols first 127 
     ('comment',       r'#[ -~]+'),
     # ('separator'      r''),
     ('newline',       r'\n'),                                             # Line Terminate
-    # ('whitespace',    r'[ \t]+'),
     ('escseq', r'(\\a)|(\\b)|(\\f)|(\\n)|(\\r)|(\\t)|(\\v)|(\\\\)|(\\\')|(\\\")|(\\\?)|(\\0)'),
-    ('ignore',        r'[ \t]+'),                                         # Skip over spaces and tabs
+    ('whitespace',    r'[ \t]+'),                                         # Skip over spaces and tabs
     ('illegal',       r'.'),                                              # Any other character                                                                    # Variables
   ]
   tok_regex = '|'.join('(?P<%s>%s)' % pair for pair in token_specification)
   line_num = 1
   line_start = 0
   idno, idcount = 0,0
-  error = []
+  error = ""
   idkey = {str:int}
   reIter = re.finditer(tok_regex, code)
 #----------------------------------------------------------------------------------------------------------
@@ -50,12 +49,12 @@ def tokenize(code):
     if kind == 'id' and value in keywords:
       kind = value
 #----------------------------------------------------------------------------------------------------------
-    elif value in reserve_symbol:                                         # Reserved Symnbols
+    elif value in reserve_symbol and kind =='symbols':                                         # Reserved Symnbols
       kind = value
 #----------------------------------------------------------------------------------------------------------
     elif kind == 'id':                                                    # Identifier
       if len(value) > 15:
-        error.append(f'Lexical Error on Ln {line_num}, Col {column}: Identifier exceeded a max length of 15 \ncharacters, you inputted {len(value)} characters')
+        error = (f'Lexical Error on Ln {line_num}, Col {column}: Identifier exceeded a max length of 15 \ncharacters, you inputted {len(value)} characters')
         kind = 'lex-error' 
       else:
         if value in idkey.keys():
@@ -67,27 +66,29 @@ def tokenize(code):
 #----------------------------------------------------------------------------------------------------------
     elif kind == 'char_literal':                                          # Character
       if re.search(r'(\'\\\'\')|(\'[ -&\(-\[\]-~]\'$)',value):                                 # FIX
-        if re.search(r'\'[ -&\(-\[\]-~]\'',value):value = str(value[1])  
-        else: value = str(value[2]) 
+        # if re.search(r'\'[ -&\(-\[\]-~]\'',value):value = str(value[1])  
+        # else: value = str(value[2]) 
+        pass
       elif re.search(r'[ -&\(-~]$',value):
         kind = 'lex-error'
-        error.append(f'Lexical Error Ln {line_num}, Col {column}): Char literal is unterminated')
+        error = (f'Lexical Error Ln {line_num}, Col {column}): Char literal is unterminated')
       elif re.search(r'\'$',value):
         kind = 'lex-error'
-        error.append(f'Lexical Error Ln {line_num}, Col {column}: Char literal exceeded a max length of 1, you inputted {len(value)-2} character/s')
+        error = (f'Lexical Error Ln {line_num}, Col {column}: Char literal exceeded a max length of 1, you inputted {len(value)-2} character/s')
 #----------------------------------------------------------------------------------------------------------
     elif kind == 'str_literal':                                     # String
-      if (len(value)-2 > 1 if re.search(r'\"$',value) else len(value)-1):
+      if (len(value)-2 > 1 if re.search(r'\"$',value) else len(value)-1 > 1):
         if re.search(r'(\"[ -!#-\[\]-~]*?(\\\")+?[ -!#-\[\]-~]*?\"$)|(\"[ -!#-\[\]-~][ -!#-\[\]-~]+?\"$)',value):                                 # FIX
-          if re.search(r'\"[ -!#-\[\]-~]*(\\\")+[ -!#-\[\]-~]*\"',value): 
-            value = value.replace("\\\"","\"")
-          value = str(value[1:len(value)-1])
+          # if re.search(r'\"[ -!#-\[\]-~]*(\\\")+[ -!#-\[\]-~]*\"',value): 
+          #   value = value.replace("\\\"","\"")
+          # value = str(value[1:len(value)-1])
+          pass
         elif re.search(r'[ -!#-~]$',value):
           kind = 'lex-error'
-          error.append(f'Lexical Error Ln {line_num}, Col {column}): String literal is unterminated')
+          error = (f'Lexical Error Ln {line_num}, Col {column}): String literal is unterminated')
       else:
         kind = 'lex-error'
-        error.append(f'Lexical Error Ln {line_num}, Col {column}: Str literal minimum character length is \n2 characters, you inputted {len(value)-2} character')                                
+        error = (f'Lexical Error Ln {line_num}, Col {column}: Str literal minimum character length is \n2 characters, you inputted {len(value)-2} character')                                
 #----------------------------------------------------------------------------------------------------------  
     elif kind == 'number' and '.' not in value:                           # Int
       if '!' in value and len(value) <= 10:                               # Neg_int_literal
@@ -97,7 +98,7 @@ def tokenize(code):
         kind = 'int_literal'
         value = int(value)
       else:                                                               # Lex Error - Int_literal
-        error.append(f'Lexical Error on Ln {line_num}, Col {column}: Int literals exceeded a max length of 9, \nyou inputted {len(value)-1 if "!" in value else len(value)} digits')
+        error = (f'Lexical Error on Ln {line_num}, Col {column}: Int literals exceeded a max length of 9, \nyou inputted {len(value)-1 if "!" in value else len(value)} digits')
         kind = 'lex-error' 
 #----------------------------------------------------------------------------------------------------------    
     elif kind == 'number' and '.' in value:                               # Deci
@@ -112,25 +113,22 @@ def tokenize(code):
         kind = 'deci_literal'                                             # Deci_literal
         value = float(value)
       elif (length-1 if '!' in value else length) > 9 and len(value) - length <=10:
-        error.append(f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded in left handside \na max length of 9, you inputted {length-1 if "!" in value else length} digits')
+        error = (f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded in left handside \na max length of 9, you inputted {length-1 if "!" in value else length} digits')
         kind = 'lex-error'                                                # Lex Error - Deci_literal - Left handside
       elif (length-1 if '!' in value else length) <= 9 and len(value) - length > 10:
-        error.append(f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded in right handside \na max length of 9, you inputted {len(value) - length - 1} digits')
+        error = (f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded in right handside \na max length of 9, you inputted {len(value) - length - 1} digits')
         kind = 'lex-error'                                                # Lex Error - Deci_literal - Right handside
       else:
-        error.append(f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded a max length of 18,\nyou inputted {len(value)-2 if "1" in value else len(value)-1} digits')
+        error = (f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded a max length of 18,\nyou inputted {len(value)-2 if "1" in value else len(value)-1} digits')
         kind = 'lex-error'                                                # Lex Error - Deci_literal
 #----------------------------------------------------------------------------------------------------------             
     elif kind == 'newline':
       line_start = mo.end()
       line_num += 1
-      continue
 #----------------------------------------------------------------------------------------------------------
-    elif kind == 'ignore' or kind == 'comment':
-        continue
 #----------------------------------------------------------------------------------------------------------
     elif kind == 'illegal':
-        error.append(f'Lexical Error on Ln {line_num}, Col {column}: Unexpected Illegal Character {value!r}')
-        kind = 'lex-error'
+      error = (f'Lexical Error on Ln {line_num}, Col {column}: Unexpected Illegal Character {value!r}')
+      kind = 'lex-error'
 #---------------------------------------------------------------------------------------------------------- 
     yield Token(kind+str(idno) if kind == 'id' else kind, value, line_num, column, error)

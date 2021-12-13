@@ -1,0 +1,10 @@
+aim
+and
+else
+for
+if
+n
+or
+shoot
+switch
+while

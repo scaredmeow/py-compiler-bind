@@ -5,14 +5,14 @@ base
 bool
 bound
 break
-carriage
 char
 con
 const
 deci
 do
-else
 elif
+else
+fs
 false
 for
 if

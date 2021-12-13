@@ -19,7 +19,7 @@ def print_lex(type,value):                      # Print Text to Lexical Pane
     lexPane.delete('1.0', constants.END)
     lexPane.insert(constants.END,"LEXEME\t\t\t\tTOKEN\n\n")
     for i in range(len(type)):
-        if type[i] == 'lex-error':
+        if type[i] == 'lex-error' or type[i] == 'newline' or type[i] == 'whitespace':
             continue
         else:
             lexPane.insert(constants.END,f'{str(value[i]) if len(str(value[i]))<=15 else str(value[i])[:10] + "..."}\t\t\t\t{str(type[i])}\n')
