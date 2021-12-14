@@ -56,6 +56,7 @@ class lexer:
                    "close_block":[")","]"],"sep(:)":[":"],"line_delim":["\n"],"arith_op":["+","-","*","/","%","!"],
                    "rela_op":[">","<","==","=!","=>","=>","=<"],"comb_op":["=-","=*","=/","=%","=+"],
                    "logi_op":["and","or","n"],"una_op":["++","--"],"separator":[",","&"]}
+    rdefinition["whitespace"] += rdefinition["line_delim"]
     rdefinition["array_delim"] = rdefinition["comb_op"] + rdefinition["open_array"] + rdefinition["close_block"]
     rdefinition["id_rdef"] = alphanumeric + rdefinition["whitespace"] + ["_","\""]
     rdefinition["expr_delim"] = rdefinition["una_op"] + rdefinition["id_rdef"] + ["!",","]
@@ -66,7 +67,7 @@ class lexer:
     rdefinition["open_codeBlock"]+=rdefinition["whitespace"]
     rdefinition["open_array"]+=rdefinition["whitespace"]
     rdefinition["open_func"]+=rdefinition["whitespace"]
-    rdefinition["line_delim"]+=rdefinition["whitespace"]
+    
     rdefinition["separator"]+=rdefinition["whitespace"]
 
     self.type = []
