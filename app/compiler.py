@@ -57,7 +57,7 @@ class lexer:
                    "rela_op":[">","<","==","=!","=>","=>","=<"],"comb_op":["=-","=*","=/","=%","=+"],
                    "logi_op":["and","or","n"],"una_op":["++","--"],"separator":[",","&"]}
     rdefinition["whitespace"] += rdefinition["line_delim"]
-    rdefinition["array_delim"] = rdefinition["comb_op"] + rdefinition["open_array"] + rdefinition["close_block"]
+    rdefinition["array_delim"] = rdefinition["comb_op"] + rdefinition["open_array"] + rdefinition["close_block"] + rdefinition["whitespace"]
     rdefinition["id_rdef"] = alphanumeric + rdefinition["whitespace"] + ["_","\""]
     rdefinition["expr_delim"] = rdefinition["una_op"] + rdefinition["id_rdef"] + ["!",","]
     rdefinition["operator"] = rdefinition["arith_op"] + rdefinition["rela_op"] + rdefinition["comb_op"] + rdefinition["una_op"]
@@ -67,7 +67,7 @@ class lexer:
     rdefinition["open_codeBlock"]+=rdefinition["whitespace"]
     rdefinition["open_array"]+=rdefinition["whitespace"]
     rdefinition["open_func"]+=rdefinition["whitespace"]
-    
+
     rdefinition["separator"]+=rdefinition["whitespace"]
 
     self.type = []
@@ -94,6 +94,7 @@ class lexer:
             self.type.append('lex-error')
             self.value.append(tmpvalue[i])          
             self.error.append(f'Lexical Error on Ln {tmpline[i]}, Col {tmpcolumn[i]}: "{tmpvalue[i+1]}" is not a valid delimiter for {tmptype[i]} ')
+            break
         else:
           for j,k in deli_reserved.items():
             if tmpvalue[i] in k:
@@ -101,7 +102,6 @@ class lexer:
                 self.type.append(tmptype[i])
                 self.value.append(tmpvalue[i])
                 self.error.append(tmperror[i])
-                break
               else:
                 self.type.append('lex-error')
                 self.value.append(tmpvalue[i])          
@@ -131,7 +131,6 @@ class lexer:
           break
       elif tmptype[i] == "int_literal" or tmptype[i] == "deci_literal" or tmptype[i] == "neg_int_literal" or tmptype[i] == "neg_deci_literal":
         if tmpvalue[i+1] in rdefinition["id_delim"]:
-          print(tmpvalue[i+1])
           self.type.append(tmptype[i])
           self.value.append(tmpvalue[i])
           self.error.append(tmperror[i])
