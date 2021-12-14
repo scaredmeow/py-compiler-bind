@@ -56,8 +56,8 @@ class lexer:
                    "close_block":[")","]"],"sep(:)":[":"],"line_delim":["\n"],"arith_op":["+","-","*","/","%","!"],
                    "rela_op":[">","<","==","=!","=>","=>","=<"],"comb_op":["=-","=*","=/","=%","=+"],
                    "logi_op":["and","or","n"],"una_op":["++","--"],"separator":[",","&"]}
-    rdefinition["array_delim"] = rdefinition["comb_op"] + rdefinition["open_array"]    
-    rdefinition["id_rdef"] = alphanumeric + rdefinition["whitespace"] + ["_"]
+    rdefinition["array_delim"] = rdefinition["comb_op"] + rdefinition["open_array"] + rdefinition["close_block"]
+    rdefinition["id_rdef"] = alphanumeric + rdefinition["whitespace"] + ["_","\""]
     rdefinition["expr_delim"] = rdefinition["una_op"] + rdefinition["id_rdef"] + ["!",","]
     rdefinition["operator"] = rdefinition["arith_op"] + rdefinition["rela_op"] + rdefinition["comb_op"] + rdefinition["una_op"]
     rdefinition["num_delim"] = (rdefinition["whitespace"] + rdefinition["open_func"] + rdefinition["operator"] 
@@ -96,20 +96,20 @@ class lexer:
         else:
           for j,k in deli_reserved.items():
             if tmpvalue[i] in k:
-              if tmpvalue[i+1] in rdefinition[j]:
+              if str(tmpvalue[i+1]) in rdefinition[j] or (True if tmptype[i+1] == ("str_literal" or "char_literal") or tmptype[i+1][0:2] == "id" else False):                
                 self.type.append(tmptype[i])
                 self.value.append(tmpvalue[i])
                 self.error.append(tmperror[i])
+                break
               else:
                 self.type.append('lex-error')
                 self.value.append(tmpvalue[i])          
                 self.error.append(f'Lexical Error on Ln {tmpline[i]}, Col {tmpcolumn[i]}: "{tmpvalue[i+1]}" is not a valid delimiter for {tmptype[i]} ')
-              break
+                break
             else:       
               continue  
       elif tmptype[i][0:2] == "id":
         if tmpvalue[i+1] in rdefinition["id_delim"]:
-          print(tmpvalue[i+1])
           self.type.append(tmptype[i])
           self.value.append(tmpvalue[i])
           self.error.append(tmperror[i])
@@ -117,19 +117,9 @@ class lexer:
           self.type.append('lex-error')
           self.value.append(tmpvalue[i])          
           self.error.append(f'Lexical Error on Ln {tmpline[i]}, Col {tmpcolumn[i]}: "{tmpvalue[i+1]}" is not a valid delimiter for {tmptype[i]} ')
-      elif tmptype[i][0:2] == "id":
-        if tmpvalue[i+1] in rdefinition["id_delim"]:
-          print(tmpvalue[i+1])
-          self.type.append(tmptype[i])
-          self.value.append(tmpvalue[i])
-          self.error.append(tmperror[i])
-        else:
-          self.type.append('lex-error')
-          self.value.append(tmpvalue[i])          
-          self.error.append(f'Lexical Error on Ln {tmpline[i]}, Col {tmpcolumn[i]}: "{tmpvalue[i+1]}" is not a valid delimiter for {tmptype[i]} ')
+          break
       elif tmptype[i] == "str_literal" or tmptype[i] == "char_literal":
-        if tmpvalue[i+1] in rdefinition["separator"]:
-          print(tmpvalue[i+1])
+        if tmpvalue[i+1] in rdefinition["id_delim"]:
           self.type.append(tmptype[i])
           self.value.append(tmpvalue[i])
           self.error.append(tmperror[i])
@@ -137,6 +127,7 @@ class lexer:
           self.type.append('lex-error')
           self.value.append(tmpvalue[i])          
           self.error.append(f'Lexical Error on Ln {tmpline[i]}, Col {tmpcolumn[i]}: "{tmpvalue[i+1]}" is not a valid delimiter for {tmptype[i]} ')
+          break
       elif tmptype[i] == "int_literal" or tmptype[i] == "deci_literal" or tmptype[i] == "neg_int_literal" or tmptype[i] == "neg_deci_literal":
         if tmpvalue[i+1] in rdefinition["id_delim"]:
           print(tmpvalue[i+1])
@@ -147,10 +138,12 @@ class lexer:
           self.type.append('lex-error')
           self.value.append(tmpvalue[i])          
           self.error.append(f'Lexical Error on Ln {tmpline[i]}, Col {tmpcolumn[i]}: "{tmpvalue[i+1]}" is not a valid delimiter for {tmptype[i]} ')
+          break
       else:
         self.type.append(tmptype[i])
         self.value.append(tmpvalue[i])
         self.error.append(tmperror[i])
+        break
 
 
 
