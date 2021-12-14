@@ -93,7 +93,11 @@ def tokenize(code):
     elif kind == 'number' and '.' not in value:                           # Int
       if '!' in value and len(value) <= 10:                               # Neg_int_literal
         kind = 'neg_int_literal'
-        value = int(re.sub("!","-",value, 1))
+        if re.search(r'^(!0+)$',value):
+          error = (f'Lexical Error on Ln {line_num}, Col {column}: Negative Zero Error')
+          kind = 'lex-error' 
+        else:
+          value = int(re.sub("!","-",value, 1))
       elif len(value) <= 9:                                               # Int_literal
         kind = 'int_literal'
         value = int(value)
@@ -107,8 +111,15 @@ def tokenize(code):
         length += 1
         i+=1
       if length <=10 and '!' in value and len(value) - length <=10:
-        kind = 'neg_deci_literal'                                         # Neg_deci_literal
-        value = float(re.sub("!","-",value, 1))
+        kind = 'neg_deci_literal'        
+        if re.search(r'^((!0+).??0*?)$',value):
+          error = (f'Lexical Error on Ln {line_num}, Col {column}: Negative Zero Error')
+          kind = 'lex-error'    
+        else:                              # Neg_deci_literal
+          value = float(re.sub("!","-",value, 1))
+      elif length <=10 and '!' in value and len(value) - length <=10 and re.search(r'^(!0+)$',value):
+        error = (f'Lexical Error on Ln {line_num}, Col {column}: Negative Zero Error')
+        kind = 'lex-error'
       elif length <=9 and len(value) - length <=10:
         kind = 'deci_literal'                                             # Deci_literal
         value = float(value)
