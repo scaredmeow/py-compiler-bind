@@ -58,7 +58,7 @@ class lexer:
                    "logi_op":["and","or","n"],"una_op":["++","--"],"separator":[",","&"]}
     rdefinition["whitespace"] += rdefinition["line_delim"]
     rdefinition["array_delim"] = rdefinition["comb_op"] + rdefinition["open_array"] + rdefinition["close_block"] + rdefinition["whitespace"]
-    rdefinition["id_rdef"] = alphanumeric + rdefinition["whitespace"] + ["_","\""]
+    rdefinition["id_rdef"] = alphanumeric + rdefinition["whitespace"] + ["_","\""] + rdefinition["close_block"]
     rdefinition["expr_delim"] = rdefinition["una_op"] + rdefinition["id_rdef"] + ["!",","]
     rdefinition["operator"] = rdefinition["arith_op"] + rdefinition["rela_op"] + rdefinition["comb_op"] + rdefinition["una_op"]
     rdefinition["num_delim"] = (rdefinition["whitespace"] + rdefinition["open_func"] + rdefinition["operator"] 
@@ -81,7 +81,7 @@ class lexer:
         self.type.append(tmptype[i])
         self.value.append(tmpvalue[i])
         self.error.append(tmperror[i])        
-        continue
+        break
       if ((tmpvalue[i] in rdefinition["whitespace"]) or tmptype == "newline"):
         continue
       if tmptype[i] in rwords or tmptype[i] in rsymbol or tmptype[i] == "comment":
@@ -118,7 +118,7 @@ class lexer:
           self.type.append('lex-error')
           self.value.append(tmpvalue[i])          
           self.error.append(f'Lexical Error on Ln {tmpline[i]}, Col {tmpcolumn[i]}: "{tmpvalue[i+1]}" is not a valid delimiter for {tmptype[i]} ')
-          continue
+          break
       elif tmptype[i] == "str_literal" or tmptype[i] == "char_literal":
         if tmpvalue[i+1] in rdefinition["id_delim"]:
           self.type.append(tmptype[i])
@@ -128,7 +128,7 @@ class lexer:
           self.type.append('lex-error')
           self.value.append(tmpvalue[i])          
           self.error.append(f'Lexical Error on Ln {tmpline[i]}, Col {tmpcolumn[i]}: "{tmpvalue[i+1]}" is not a valid delimiter for {tmptype[i]} ')
-          continue
+          break
       elif tmptype[i] == "int_literal" or tmptype[i] == "deci_literal" or tmptype[i] == "neg_int_literal" or tmptype[i] == "neg_deci_literal":
         if tmpvalue[i+1] in rdefinition["id_delim"]:
           self.type.append(tmptype[i])
@@ -138,7 +138,7 @@ class lexer:
           self.type.append('lex-error')
           self.value.append(tmpvalue[i])          
           self.error.append(f'Lexical Error on Ln {tmpline[i]}, Col {tmpcolumn[i]}: "{tmpvalue[i+1]}" is not a valid delimiter for {tmptype[i]} ')
-          continue
+          break
       else:
         self.type.append(tmptype[i])
         self.value.append(tmpvalue[i])

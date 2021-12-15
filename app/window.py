@@ -30,11 +30,16 @@ def print_lex(type,value):                      # Print Text to Lexical Pane
 def print_error(error):                      # Print Text to Error Pane
     errorPane.config(state="normal")
     errorPane.delete('1.0', constants.END)
-    for error in error:
-        if error != '':
-            errorPane.insert(constants.END,f'{error}\n')
+    for err in range(len(error)):
+        if err+1 == len(error):
+            if error[err] != '':
+                errorPane.insert(constants.END,f'{error[err]}\n')
         else:
-            continue
+            if error[err] != '':
+                if error[err] != error[err+1]:
+                    errorPane.insert(constants.END,f'{error[err]}\n')
+            else:
+                continue
 
 def refresh():
     inputPane.config(state="normal")

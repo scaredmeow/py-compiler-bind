@@ -21,11 +21,11 @@ def tokenize(code):
   keywords = rwords
   reserve_symbol = rsymbol
   token_specification = [
-    ('number',        r'!?\d+\.?\d*'),                                     # Integer or decimal number
+    ('number',        r'(!??)\d+\.?\d*'),                                     # Integer or decimal number
     ('id',            r'[a-z][0-9a-zA-Z_]*'),                                # Identifiers
     ('char_literal',  r'\'[ -&\(-~]+\'?'),                                       # Char          (\\\\)(\\\')(\\\")(\\\?) 
     ('str_literal',   r'\"[ -!#-~]+\"?'),                                  # Str
-    ('symbols',       r'[%-&\(-\-\/:-\?\[\]\^\{\}]+'),                                         # Symbols first 127 
+    ('symbols',       r'[!%-&\(-\-\/:-\?\[\]\^\{\}]+'),                                         # Symbols first 127 
     ('comment',       r'#[ -~]+'),
     # ('separator'      r''),
     ('newline',       r'\n'),                                             # Line Terminate
@@ -51,10 +51,18 @@ def tokenize(code):
 #----------------------------------------------------------------------------------------------------------
     elif kind =='symbols':                                         # Reserved Symnbols
       if value in reserve_symbol: kind = value
+      # else: 
+      #   error = (f'Lexical Error on Ln {line_num}, Col {column}: Unexpected Illegal Character {value!r}')
+      #   kind = 'lex-error'
       else: 
-        kind = 'illegal'
-        error = (f'Lexical Error on Ln {line_num}, Col {column}: Unexpected Illegal Character {value!r}')
-        kind = 'lex-error'
+        for i in range(len(value)):
+          if value[i] in reserve_symbol: 
+            kind = value[i]
+            yield Token(kind, kind, line_num, column, error)    
+          else:
+            error = (f'Lexical Error on Ln {line_num}, Col {column}: Unexpected Illegal Character {value!r}')
+            kind = 'lex-error'
+        continue
 #----------------------------------------------------------------------------------------------------------
     elif kind == 'id':                                                    # Identifier
       if len(value) > 15:
@@ -108,35 +116,45 @@ def tokenize(code):
       else:                                                               # Lex Error - Int_literal
         error = (f'Lexical Error on Ln {line_num}, Col {column}: Int literals exceeded a max length of 9, \nyou inputted {len(value)-1 if "!" in value else len(value)} digits')
         kind = 'lex-error' 
-#----------------------------------------------------------------------------------------------------------    
-    elif kind == 'number' and '.' in value:                               # Deci
-      length, i = 0,0
-      while value[i] != '.':                                              # Length Lefthandside
-        length += 1
-        i+=1
-      if length <=10 and '!' in value and len(value) - length <=10:
-        kind = 'neg_deci_literal'        
-        if re.search(r'^((!0+).??0*?)$',value):
+#----------------------------------------------------------------------------------------------------------         
+    elif '.' in value:       
+      if kind == 'number' and re.search(r'\.[0-9]+$',value):                               # Deci
+        length, i = 0,0
+        while value[i] != '.':                                              # Length Lefthandside
+          length += 1
+          i+=1
+        if length <=10 and '!' in value and len(value) - length <=10:
+          kind = 'neg_deci_literal'        
+          if re.search(r'^((!0+).??0*?)$',value):
+            error = (f'Lexical Error on Ln {line_num}, Col {column}: Negative Zero Error')
+            kind = 'lex-error'    
+          else:                              # Neg_deci_literal
+            value = float(re.sub("!","-",value, 1))
+        elif length <=10 and '!' in value and len(value) - length <=10 and re.search(r'^(!0+)$',value):
           error = (f'Lexical Error on Ln {line_num}, Col {column}: Negative Zero Error')
-          kind = 'lex-error'    
-        else:                              # Neg_deci_literal
-          value = float(re.sub("!","-",value, 1))
-      elif length <=10 and '!' in value and len(value) - length <=10 and re.search(r'^(!0+)$',value):
-        error = (f'Lexical Error on Ln {line_num}, Col {column}: Negative Zero Error')
-        kind = 'lex-error'
-      elif length <=9 and len(value) - length <=10:
-        kind = 'deci_literal'                                             # Deci_literal
-        value = float(value)
-      elif (length-1 if '!' in value else length) > 9 and len(value) - length <=10:
-        error = (f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded in left handside \na max length of 9, you inputted {length-1 if "!" in value else length} digits')
-        kind = 'lex-error'                                                # Lex Error - Deci_literal - Left handside
-      elif (length-1 if '!' in value else length) <= 9 and len(value) - length > 10:
-        error = (f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded in right handside \na max length of 9, you inputted {len(value) - length - 1} digits')
-        kind = 'lex-error'                                                # Lex Error - Deci_literal - Right handside
+          kind = 'lex-error'
+        elif length <=9 and len(value) - length <=10:
+          kind = 'deci_literal'                                             # Deci_literal
+          value = float(value)
+        elif (length-1 if '!' in value else length) > 9 and len(value) - length <=10:
+          error = (f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded in left handside \na max length of 9, you inputted {length-1 if "!" in value else length} digits')
+          kind = 'lex-error'                                                # Lex Error - Deci_literal - Left handside
+        elif (length-1 if '!' in value else length) <= 9 and len(value) - length > 10:
+          error = (f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded in right handside \na max length of 9, you inputted {len(value) - length - 1} digits')
+          kind = 'lex-error'                                                # Lex Error - Deci_literal - Right handside
+        else:
+          error = (f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded a max length of 18,\nyou inputted {len(value)-2 if "1" in value else len(value)-1} digits')
+          kind = 'lex-error'                                                # Lex Error - Deci_literal
+      elif kind == 'number':
+        error = (f'Lexical Error on Ln {line_num}, Col {column}: Incomplete deci literal')
+        kind = 'lex-error'         
+        pass        
       else:
-        error = (f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded a max length of 18,\nyou inputted {len(value)-2 if "1" in value else len(value)-1} digits')
-        kind = 'lex-error'                                                # Lex Error - Deci_literal
-#----------------------------------------------------------------------------------------------------------             
+        error = (f'Lexical Error on Ln {line_num}, Col {column}: Invalid deci literal')
+        kind = 'lex-error'  
+
+#---------------------------------------------------------------------------------------------------------- 
+           
     elif kind == 'newline':
       line_start = mo.end()
       line_num += 1
