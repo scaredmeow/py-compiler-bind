@@ -25,7 +25,7 @@ def tokenize(code):
     ('id',            r'[a-z][0-9a-zA-Z_]*'),                                # Identifiers
     ('char_literal',  r'\'[ -&\(-~]+\'?'),                                       # Char          (\\\\)(\\\')(\\\")(\\\?) 
     ('str_literal',   r'\"[ -!#-~]+\"?'),                                  # Str
-    ('symbols',       r'[%-&\(-\-\/:-\?\[\]\^\{\}]+?'),                                         # Symbols first 127 
+    ('symbols',       r'[%-&\(-\-\/:-\?\[\]\^\{\}]+'),                                         # Symbols first 127 
     ('comment',       r'#[ -~]+'),
     # ('separator'      r''),
     ('newline',       r'\n'),                                             # Line Terminate
