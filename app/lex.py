@@ -49,8 +49,12 @@ def tokenize(code):
     if kind == 'id' and value in keywords:
       kind = value
 #----------------------------------------------------------------------------------------------------------
-    elif value in reserve_symbol and kind =='symbols':                                         # Reserved Symnbols
-      kind = value
+    elif kind =='symbols':                                         # Reserved Symnbols
+      if value in reserve_symbol: kind = value
+      else: 
+        kind = 'illegal'
+        error = (f'Lexical Error on Ln {line_num}, Col {column}: Unexpected Illegal Character {value!r}')
+        kind = 'lex-error'
 #----------------------------------------------------------------------------------------------------------
     elif kind == 'id':                                                    # Identifier
       if len(value) > 15:
@@ -136,7 +140,6 @@ def tokenize(code):
     elif kind == 'newline':
       line_start = mo.end()
       line_num += 1
-#----------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------
     elif kind == 'illegal':
       error = (f'Lexical Error on Ln {line_num}, Col {column}: Unexpected Illegal Character {value!r}')
