@@ -2,7 +2,7 @@ from typing import NamedTuple
 import re
 import os
 
-# ----------------------------------------------------------------------------------------------------------
+
 # Getting tokens
 os.chdir('app')
 with open("tokens/rword.txt") as f:
@@ -11,7 +11,6 @@ with open("tokens/rword.txt") as f:
 with open("tokens/rsymbol.txt") as f:
     rsymbol = f.read()
     rsymbol = list(item for item in rsymbol.split('\n') if item.strip())
-# ----------------------------------------------------------------------------------------------------------
 
 
 class Token(NamedTuple):
@@ -20,7 +19,6 @@ class Token(NamedTuple):
     line: int
     column: int
     error: str
-# ----------------------------------------------------------------------------------------------------------
 
 
 def tokenize(code):
