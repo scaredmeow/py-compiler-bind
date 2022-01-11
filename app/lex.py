@@ -71,13 +71,29 @@ def tokenize(code):
             #   error = (f'Lexical Error on Ln {line_num}, Col {column}: Unexpected Illegal Character {value!r}')
             #   kind = 'lex-error'
             else:
-                for i in range(len(value)):
-                    if value[i] in reserve_symbol:
-                        kind = value[i]
-                        yield Token(kind, kind, line_num, column, error)
+                flag = 0
+                for i, val in enumerate(value):
+                    if flag == 0:
+                        if val in reserve_symbol:
+                            if i+1 != len(value):
+                                # print(val)
+                                if value[i:i+2] in reserve_symbol:
+                                    kind = (f'{val}{value[i+1]}')
+                                    flag = 1
+                                else:
+                                    kind = val
+                                    flag = 0
+                            else:
+                                kind = val
+                                flag = 0
+                        else:
+                            error = f"Lexical Error on Ln {line_num}, Col {column}: Unexpected Illegal Character {value!r}"
+                            kind = "lex-error"
+                            continue
                     else:
-                        error = f"Lexical Error on Ln {line_num}, Col {column}: Unexpected Illegal Character {value!r}"
-                        kind = "lex-error"
+                        flag = 0
+                        continue
+                    yield Token(kind, kind, line_num, column, error)
                 continue
         # ----------------------------------------------------------------------------------------------------------
         elif kind == "id":  # Identifier
@@ -200,5 +216,6 @@ def tokenize(code):
             kind = "lex-error"
         # ----------------------------------------------------------------------------------------------------------
         yield Token(
-            kind + str(idno) if kind == "id" else kind, value, line_num, column, error
+            kind +
+            str(idno) if kind == "id" else kind, value, line_num, column, error
         )
