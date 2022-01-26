@@ -1,8 +1,7 @@
-import os
 import lex
 
 deli_reserved = {"sep(:)": ["base"], "open_array": [
-    "arr"], "array_delim": ["]"], "value_delim": ["attack", "defend"], "terminator": ["kill", "revive"], }
+    "arr"], "array_delim": ["]"], "value_delim": ["attack", "defend"], "terminator": ["kill", "revive"], "grouping": [")"]}
 # ----------------------------------------------------------------------------------------------------------
 # os.chdir('app')                                                           # Getting tokens
 with open("tokens/rword.txt") as f:
@@ -124,6 +123,11 @@ class lexer:
             rdefinition["separator"] +
             rdefinition["terminator"]
         )
+        rdefinition["grouping"] = (
+            rdefinition["operator"] +
+            rdefinition["close_block"]
+        )
+
         self.type = []
         self.value = []
         self.line = []
@@ -153,6 +157,7 @@ class lexer:
                         break
                 else:
                     for j, k in deli_reserved.items():
+                        print(j, "e ", k)
                         if tmpvalue[i] in k:
                             if str(tmpvalue[i + 1])[0] in rdefinition[j] or (
                                 True

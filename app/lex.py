@@ -75,6 +75,7 @@ def tokenize(code):
                 for i, val in enumerate(value):
                     column += 1
                     if flag == 0:
+                        print(val)
                         if val in reserve_symbol:
                             if i+1 != len(value):
                                 if value[i:i+2] in reserve_symbol:
