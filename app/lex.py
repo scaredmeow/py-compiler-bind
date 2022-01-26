@@ -73,10 +73,10 @@ def tokenize(code):
             else:
                 flag = 0
                 for i, val in enumerate(value):
+                    column += 1
                     if flag == 0:
                         if val in reserve_symbol:
                             if i+1 != len(value):
-                                # print(val)
                                 if value[i:i+2] in reserve_symbol:
                                     kind = (f'{val}{value[i+1]}')
                                     flag = 1
