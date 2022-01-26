@@ -125,7 +125,8 @@ class lexer:
         )
         rdefinition["grouping"] = (
             rdefinition["operator"] +
-            rdefinition["close_block"]
+            rdefinition["close_block"] +
+            rdefinition["terminator"]
         )
 
         self.type = []
