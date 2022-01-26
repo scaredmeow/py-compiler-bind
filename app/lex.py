@@ -34,7 +34,7 @@ def tokenize(code):
         # Str
         ("str_literal", r"\"[ -!#-~]+\"?"),
         # Symbols first 127
-        ("symbols", r"[!%-&\(-\-\/:-\?\[\]\^\{\}]+"),
+        ("symbols", r"[!%-&\(-\/:-\?\[\]\^\{\}]+"),
         ("comment", r"#[ -~]+"),
         # ('separator'      r''),
         # Line Terminate
@@ -156,9 +156,9 @@ def tokenize(code):
                 error = f'Lexical Error on Ln {line_num}, Col {column}: Int literals exceeded a max length of 9, \nyou inputted {len(value)-1 if "!" in value else len(value)} digits'
                 kind = "lex-error"
         # ----------------------------------------------------------------------------------------------------------
-        elif "." in value:
+        elif kind == "number" and "." in value:
             # Deci
-            if kind == "number" and re.search(r"\.[0-9]+$", value):
+            if re.search(r"\.[0-9]+$", value) and re.search(r"^((!??)\d+)", value):
                 length, i = 0, 0
                 # Length Lefthandside
                 while value[i] != ".":

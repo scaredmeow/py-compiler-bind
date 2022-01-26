@@ -1,7 +1,7 @@
 import lex
 
 deli_reserved = {"sep(:)": ["base"], "open_array": [
-    "arr"], "array_delim": ["]"], "value_delim": ["attack", "defend"], "terminator": ["kill", "revive"], "grouping": [")"]}
+    "arr"], "array_delim": ["]"], "value_delim": ["attack", "defend"], "terminator": ["kill", "revive"], "grouping": [")"], }
 # ----------------------------------------------------------------------------------------------------------
 # os.chdir('app')                                                           # Getting tokens
 with open("tokens/rword.txt") as f:
@@ -83,12 +83,14 @@ class lexer:
         rdefinition["id_rdef"] = (
             alphanumeric
             + rdefinition["whitespace"]
-            + ["_", '"']
+            + ["_", '"', '{', ","]
             + rdefinition["close_block"]
+            + rdefinition["terminator"]
         )
         rdefinition["expr_delim"] = (
             rdefinition["una_op"] +
             rdefinition["id_rdef"] +
+            rdefinition["terminator"] +
             ["!", ","]
         )
         rdefinition["operator"] = (
@@ -104,11 +106,13 @@ class lexer:
             + rdefinition["separator"]
             + rdefinition["line_delim"]
             + rdefinition["terminator"]
+            + [":"]
         )
         rdefinition["id_delim"] = (
             rdefinition["num_delim"]
             + rdefinition["open_func"]
             + rdefinition["open_array"]
+            + [".", "{"]
         )
         rdefinition["open_codeBlock"] += rdefinition["whitespace"]
         rdefinition["open_array"] += rdefinition["whitespace"]
@@ -126,7 +130,8 @@ class lexer:
         rdefinition["grouping"] = (
             rdefinition["operator"] +
             rdefinition["close_block"] +
-            rdefinition["terminator"]
+            rdefinition["terminator"] +
+            rdefinition["open_codeBlock"]
         )
 
         self.type = []
