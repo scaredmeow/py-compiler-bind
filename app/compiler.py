@@ -2,7 +2,7 @@ import os
 import lex
 
 deli_reserved = {"sep(:)": ["base"], "open_array": [
-    "arr"], "array_delim": ["]"]}
+    "arr"], "array_delim": ["]"], "value_delim": ["attack", "defend"], "terminator": ["kill", "revive"], }
 # ----------------------------------------------------------------------------------------------------------
 # os.chdir('app')                                                           # Getting tokens
 with open("tokens/rword.txt") as f:
@@ -88,7 +88,9 @@ class lexer:
             + rdefinition["close_block"]
         )
         rdefinition["expr_delim"] = (
-            rdefinition["una_op"] + rdefinition["id_rdef"] + ["!", ","]
+            rdefinition["una_op"] +
+            rdefinition["id_rdef"] +
+            ["!", ","]
         )
         rdefinition["operator"] = (
             rdefinition["arith_op"]
@@ -116,9 +118,12 @@ class lexer:
             + alphanumeric
         )
         rdefinition["separator"] += (
-            rdefinition["whitespace"] + rdefinition["terminator"]
+            rdefinition["whitespace"]
         )
-
+        rdefinition["value_delim"] = (
+            rdefinition["separator"] +
+            rdefinition["terminator"]
+        )
         self.type = []
         self.value = []
         self.line = []

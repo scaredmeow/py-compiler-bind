@@ -1,6 +1,6 @@
 aim
 and
-else
+elif
 for
 if
 n
