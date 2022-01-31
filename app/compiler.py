@@ -65,7 +65,7 @@ class lexer:
             "close_block": [")", "]", "}"],
             "sep(:)": [":"],
             "line_delim": ["\n"],
-            "arith_op": ["=", "+", "-", "*", "/", "%", "!"],
+            "arith_op": ["=", "+", "-", "*", "/", "%", "~"],
             "rela_op": [">", "<", "==", "=!", "=>", "=>", "=<"],
             "comb_op": ["=-", "=*", "=/", "=%", "=+"],
             "logi_op": ["and", "or", "n"],
@@ -74,12 +74,6 @@ class lexer:
             "terminator": [";"],
         }
         rdefinition["whitespace"] += rdefinition["line_delim"]
-        rdefinition["array_delim"] = (
-            rdefinition["comb_op"]
-            + rdefinition["open_array"]
-            + rdefinition["close_block"]
-            + rdefinition["whitespace"]
-        )
         rdefinition["id_rdef"] = (
             alphanumeric
             + rdefinition["whitespace"]
@@ -87,17 +81,30 @@ class lexer:
             + rdefinition["close_block"]
             + rdefinition["terminator"]
         )
+        rdefinition["open_func"] += (
+            rdefinition["whitespace"]
+            + alphanumeric
+        )
         rdefinition["expr_delim"] = (
             rdefinition["una_op"] +
             rdefinition["id_rdef"] +
             rdefinition["terminator"] +
-            ["!", ","]
+            ["~", ",", "!"] +
+            rdefinition["open_func"]
         )
         rdefinition["operator"] = (
             rdefinition["arith_op"]
             + rdefinition["rela_op"]
             + rdefinition["comb_op"]
             + rdefinition["una_op"]
+        )
+        rdefinition["array_delim"] = (
+            rdefinition["comb_op"]
+            + rdefinition["operator"]
+            + rdefinition["open_array"]
+            + rdefinition["close_block"]
+            + rdefinition["whitespace"]
+            + rdefinition["terminator"]
         )
         rdefinition["num_delim"] = (
             rdefinition["whitespace"]
@@ -116,10 +123,6 @@ class lexer:
         )
         rdefinition["open_codeBlock"] += rdefinition["whitespace"]
         rdefinition["open_array"] += rdefinition["whitespace"]
-        rdefinition["open_func"] += (
-            rdefinition["whitespace"]
-            + alphanumeric
-        )
         rdefinition["separator"] += (
             rdefinition["whitespace"]
         )
@@ -133,6 +136,9 @@ class lexer:
             rdefinition["terminator"] +
             rdefinition["open_codeBlock"]
         )
+        # rdefinition["open_func"] += (
+        #     rdefinition["close_block"]
+        # )
 
         self.type = []
         self.value = []
@@ -163,11 +169,13 @@ class lexer:
                         break
                 else:
                     for j, k in deli_reserved.items():
-                        print(j, "e ", k)
+                        print(j)
+                        print(rdefinition[j])
+                        print((tmpvalue[i + 1])[0])
                         if tmpvalue[i] in k:
                             if str(tmpvalue[i + 1])[0] in rdefinition[j] or (
                                 True
-                                if tmptype[i + 1] == ("str_literal" or "char_literal")
+                                if tmptype[i + 1] == ("str_literal") or tmptype[i + 1] == ("char_literal")
                                 or tmptype[i + 1][0:2] == "id"
                                 else False
                             ):
