@@ -30,9 +30,9 @@ def tokenize(code):
         # Identifiers
         ("id", r"[a-z][0-9a-zA-Z_]*"),
         # Char          (\\\\)(\\\')(\\\")(\\\?)
-        ("char_literal", r"\'[ -&\(-~]+\'?"),
+        ("agent_literal", r"\'[ -&\(-~]+\'?"),
         # Str
-        ("str_literal", r"\"[ -!#-~]+\"?"),
+        ("roster_literal", r"\"[ -!#-~]+\"?"),
         # Symbols first 127
         ("symbols", r"[!%-&\(-\/:-\?\[\]\^\{\}]+"),
         ("comment", r"#[ -~]+"),
@@ -108,7 +108,7 @@ def tokenize(code):
                     idkey.update({value: idcount})
                     idno = idkey[value]
         # ----------------------------------------------------------------------------------------------------------
-        elif kind == "char_literal":  # Character
+        elif kind == "agent_literal":  # Character
             # FIX
             if re.search(r"(\'\\\'\')|(\'[ -&\(-\[\]-~]\'$)", value):
                 # if re.search(r'\'[ -&\(-\[\]-~]\'',value):value = str(value[1])
@@ -116,12 +116,12 @@ def tokenize(code):
                 pass
             elif re.search(r"[ -&\(-~]$", value):
                 kind = "lex-error"
-                error = f"Lexical Error Ln {line_num}, Col {column}): Char literal is unterminated"
+                error = f"Lexical Error Ln {line_num}, Col {column}): Agent literal is unterminated"
             elif re.search(r"\'$", value):
                 kind = "lex-error"
-                error = f"Lexical Error Ln {line_num}, Col {column}: Char literal exceeded a max length of 1, you inputted {len(value)-2} character/s"
+                error = f"Lexical Error Ln {line_num}, Col {column}: Agent literal exceeded a max length of 1, you inputted {len(value)-2} character/s"
         # ----------------------------------------------------------------------------------------------------------
-        elif kind == "str_literal":  # String
+        elif kind == "roster_literal":  # String
             if len(value) - 2 > 1 if re.search(r"\"$", value) else len(value) - 1 > 1:
                 # FIX
                 if re.search(
@@ -134,10 +134,10 @@ def tokenize(code):
                     pass
                 elif re.search(r"[ -!#-~]$", value):
                     kind = "lex-error"
-                    error = f"Lexical Error Ln {line_num}, Col {column}): String literal is unterminated"
+                    error = f"Lexical Error Ln {line_num}, Col {column}): Roster literal is unterminated"
             else:
                 kind = "lex-error"
-                error = f"Lexical Error Ln {line_num}, Col {column}: Str literal minimum character length is \n2 characters, you inputted {len(value)-2} character"
+                error = f"Lexical Error Ln {line_num}, Col {column}: Roster literal minimum character length is \n2 characters, you inputted {len(value)-2} character"
         # ----------------------------------------------------------------------------------------------------------
         elif kind == "number" and "." not in value:  # Int
             # Neg_classic_literal
@@ -152,7 +152,7 @@ def tokenize(code):
                 kind = "classic_literal"
                 value = int(value)
             else:  # Lex Error - classic_literal
-                error = f'Lexical Error on Ln {line_num}, Col {column}: Int literals exceeded a max length of 9, \nyou inputted {len(value)-1 if "~" in value else len(value)} digits'
+                error = f'Lexical Error on Ln {line_num}, Col {column}: Classic literals exceeded a max length of 9, \nyou inputted {len(value)-1 if "~" in value else len(value)} digits'
                 kind = "lex-error"
         # ----------------------------------------------------------------------------------------------------------
         elif kind == "number" and "." in value:
@@ -184,25 +184,25 @@ def tokenize(code):
                 elif (length - 1 if "~" in value else length) > 9 and len(
                     value
                 ) - length <= 10:
-                    error = f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded in left handside \na max length of 9, you inputted {length-1 if "~" in value else length} digits'
+                    error = f'Lexical Error on Ln {line_num}, Col {column}: Sheriff literals exceeded in left handside \na max length of 9, you inputted {length-1 if "~" in value else length} digits'
                     # Lex Error - sheriff_literal - Left handside
                     kind = "lex-error"
                 elif (length - 1 if "~" in value else length) <= 9 and len(
                     value
                 ) - length > 10:
-                    error = f"Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded in right handside \na max length of 9, you inputted {len(value) - length - 1} digits"
+                    error = f"Lexical Error on Ln {line_num}, Col {column}: Sheriff literals exceeded in right handside \na max length of 9, you inputted {len(value) - length - 1} digits"
                     # Lex Error - sheriff_literal - Right handside
                     kind = "lex-error"
                 else:
-                    error = f'Lexical Error on Ln {line_num}, Col {column}: Deci literals exceeded a max length of 18,\nyou inputted {len(value)-2 if "1" in value else len(value)-1} digits'
+                    error = f'Lexical Error on Ln {line_num}, Col {column}: Sheriff literals exceeded a max length of 18,\nyou inputted {len(value)-2 if "1" in value else len(value)-1} digits'
                     # Lex Error - sheriff_literal
                     kind = "lex-error"
             elif kind == "number":
-                error = f"Lexical Error on Ln {line_num}, Col {column}: Incomplete deci literal"
+                error = f"Lexical Error on Ln {line_num}, Col {column}: Incomplete sheriff literal"
                 kind = "lex-error"
                 pass
             else:
-                error = f"Lexical Error on Ln {line_num}, Col {column}: Invalid deci literal"
+                error = f"Lexical Error on Ln {line_num}, Col {column}: Invalid sheriff literal"
                 kind = "lex-error"
 
         # ----------------------------------------------------------------------------------------------------------

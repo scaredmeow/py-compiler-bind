@@ -33,10 +33,14 @@ with open("tokens/rdef/alphanumeric.txt") as f:
     alphanumeric = f.read()
     alphanumeric = list(
         item for item in alphanumeric.split("\n") if item.strip())
+with open("tokens/rdef/alphakeys.txt") as f:
+    alphakeys = f.read()
+    alphakeys = list(
+        item for item in alphakeys.split("\n") if item.strip())
 deli_reserved["whitespace"] = whitespace
 deli_reserved["open_func"] = open_func
 deli_reserved["open_codeBlock"] = open_codeBlock
-deli_reserved["line_delim"] = line_delim
+# deli_reserved["line_delim"] = line_delim
 deli_reserved["expr_delim"] = expr_delim
 deli_reserved["id_rdef"] = id_rdef
 # ----------------------------------------------------------------------------------------------------------
@@ -89,7 +93,7 @@ class lexer:
             rdefinition["una_op"] +
             rdefinition["id_rdef"] +
             rdefinition["terminator"] +
-            ["~", ",", "!"] +
+            ["~", ",", "!", ","] +
             rdefinition["open_func"]
         )
         rdefinition["operator"] = (
@@ -128,13 +132,15 @@ class lexer:
         )
         rdefinition["value_delim"] = (
             rdefinition["separator"] +
-            rdefinition["terminator"]
+            rdefinition["terminator"] +
+            rdefinition["close_block"]
         )
         rdefinition["grouping"] = (
             rdefinition["operator"] +
             rdefinition["close_block"] +
             rdefinition["terminator"] +
-            rdefinition["open_codeBlock"]
+            rdefinition["open_codeBlock"] +
+            [","]
         )
         # rdefinition["open_func"] += (
         #     rdefinition["close_block"]
@@ -156,7 +162,7 @@ class lexer:
                 continue
             if tmptype[i] in rwords or tmptype[i] in rsymbol or tmptype[i] == "comment":
                 if tmpvalue[i] == "fs":
-                    if tmptype[i + 1] == "str_literal":
+                    if tmptype[i + 1] == "roster_literal":
                         self.type.append(tmptype[i])
                         self.value.append(tmpvalue[i])
                         self.error.append(tmperror[i])
@@ -167,18 +173,35 @@ class lexer:
                             f'Lexical Error on Ln {tmpline[i]}, Col {tmpcolumn[i]}: "{str(tmpvalue[i + 1])[0]}" is not a valid delimiter for {tmptype[i]} '
                         )
                         break
+                # elif tmpvalue[i] == "[":
+                #     if str(tmpvalue[i + 1])[0] in alphakeys or (
+                #         True
+                #         if tmptype[i + 1] == ("roster_literal") or tmptype[i + 1] == ("agent_literal")
+                #         or tmptype[i + 1][0:2] == "id" or tmptype[i + 1] == "classic_literal"
+                #         else False
+                #     ):
+                #         self.type.append(tmptype[i])
+                #         self.value.append(tmpvalue[i])
+                #         self.error.append(tmperror[i])
+                #     else:
+                #         self.type.append("lex-error")
+                #         self.value.append(tmpvalue[i])
+                #         self.error.append(
+                #             f'Lexical Error on Ln {tmpline[i]}, Col {tmpcolumn[i]}: "{str(tmpvalue[i + 1])[0]}" is not a valid delimiter for {tmptype[i]} '
+                #         )
+                #         break
                 else:
                     for j, k in deli_reserved.items():
                         print(j)
                         print(rdefinition[j])
-                        print((tmpvalue[i + 1])[0])
+                        print(str((tmpvalue[i + 1]))[0])
                         if tmpvalue[i] in k:
-                            if str(tmpvalue[i + 1])[0] in rdefinition[j] or (
+                            if (str(tmpvalue[i + 1])[0] in rdefinition[j] or (
                                 True
-                                if tmptype[i + 1] == ("str_literal") or tmptype[i + 1] == ("char_literal")
+                                if tmptype[i + 1] == ("roster_literal") or tmptype[i + 1] == ("agent_literal")
                                 or tmptype[i + 1][0:2] == "id"
                                 else False
-                            ):
+                            )) and tmptype[i+1] != "lex-error":
                                 self.type.append(tmptype[i])
                                 self.value.append(tmpvalue[i])
                                 self.error.append(tmperror[i])
@@ -204,7 +227,7 @@ class lexer:
                         f'Lexical Error on Ln {tmpline[i]}, Col {tmpcolumn[i]}: "{str(tmpvalue[i + 1])[0]}" is not a valid delimiter for {tmptype[i]} '
                     )
                     break
-            elif tmptype[i] == "str_literal" or tmptype[i] == "char_literal":
+            elif tmptype[i] == "roster_literal" or tmptype[i] == "agent_literal":
                 if tmpvalue[i + 1] in rdefinition["id_delim"]:
                     self.type.append(tmptype[i])
                     self.value.append(tmpvalue[i])
