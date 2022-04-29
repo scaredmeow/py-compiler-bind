@@ -1,14 +1,13 @@
 import compiler
-from tkinter import Tk
-from tkinter import PhotoImage
-from tkinter import Text
-from tkinter import Canvas
-from tkinter import Button
+from tkinter import *
 from tkinter import constants
+from pyglet import font
 
+font.add_file('assets/OpenSans-ExtraBold.ttf')
+font.add_file('assets/OpenSans-Regular.ttf')
 
 def run_lex():                                  # Run Lexical Analyzer
-    inputValue = inputPane.get("1.0", "end-1c")
+    inputValue = editorPane.get("1.0", "end-1c")
     lex = compiler.lexer(inputValue)
     print_lex(lex.type, lex.value)
     print_error(lex.error)
@@ -46,10 +45,10 @@ def print_error(error):                      # Print Text to Error Pane
 
 
 def refresh():
-    inputPane.config(state="normal")
+    editorPane.config(state="normal")
     lexPane.config(state="normal")
     errorPane.config(state="normal")
-    inputPane.delete('1.0', constants.END)
+    editorPane.delete('1.0', constants.END)
     lexPane.delete('1.0', constants.END)
     errorPane.delete('1.0', constants.END)
     lexPane.config(state="disabled")
@@ -59,10 +58,13 @@ def refresh():
 window = Tk()
 
 window.geometry("939x617")
-window.configure(bg="#251c3b")
+window.resizable(False, False)
+window.title("Bind Compiler")
+window.iconbitmap("assets/logo.ico")
+window.configure(bg="#E3E3E3")
 canvas = Canvas(
     window,
-    bg="#251c3b",
+    bg="#E3E3E3",
     height=617,
     width=939,
     bd=0,
@@ -70,116 +72,144 @@ canvas = Canvas(
     relief="ridge")
 canvas.place(x=0, y=0)
 
-inputPane_img = PhotoImage(file=f"img/img_textBox0.png")
-inputPane_bg = canvas.create_image(
-    291.5, 272.0,
-    image=inputPane_img)
+# Title Bar
+titlebar_img = PhotoImage(file=f"assets/titlebar.png")
+titlebar = canvas.create_image(
+    469.5, 23,
+    image=titlebar_img)
+titlebarIcon_img = PhotoImage(file=f"assets/logo.png")
+titleIcon = canvas.create_image(
+    20, 22,
+    image=titlebarIcon_img,
+)
+title = canvas.create_text(
+    70, 22,
+    text="Bind",
+    font=('Open Sans ExtraBold', 20),
+    fill="#211B36",
+)
 
-inputPane = Text(
-    bd=0,
-    bg="#2a2247",
+# Buttons
+runIcon_img = PhotoImage(file=f"assets/run.png")
+lexicalBtn = Button(
+    image=runIcon_img,
+    compound=LEFT,
+    bg="#CDDCE1", 
+    borderwidth=0,
     highlightthickness=0,
-    fg="white",
+    activebackground="#211B36",
+    fg="#079AD2",
+    text="  Lexical Analyzer",
+    font=('Open Sans', 10),
+    activeforeground="#FFFFFF",
+    justify="center",
+    command=run_lex,
+)
+lexicalBtn.place(
+    x=13, y=57,
+    width=148,
+    height=30,
+)
+# semButton.place(
+#     x=200, y=52,
+#     width=200,
+#     height=30)
+syntaxBtn = Button(
+    image=runIcon_img,
+    compound=LEFT,
+    bg="#CDDCE1", 
+    borderwidth=0,
+    highlightthickness=0,
+    activebackground="#211B36",
+    fg="#079AD2",
+    text="  Syntax Analyzer",
+    font=('Open Sans', 10),
+    activeforeground="#FFFFFF",
+    justify="center",
+)
+syntaxBtn.place(
+    x=170, y=57,
+    width=148,
+    height=30,
+)
+
+semanticBtn = Button(
+    image=runIcon_img,
+    compound=LEFT,
+    bg="#CDDCE1", 
+    borderwidth=0,
+    highlightthickness=0,
+    activebackground="#211B36",
+    fg="#079AD2",
+    text="  Semantic Analyzer",
+    font=('Open Sans', 10),
+    activeforeground="#FFFFFF",
+    justify="center",
+)
+semanticBtn.place(
+    x=328, y=57,
+    width=148,
+    height=30,
+)
+
+# Editor Pane
+editorPane = Text(
+    bd=0,
+    bg="#F0F0F0",
+    highlightthickness=0,
+    fg="#211B36",
     padx=10,
     pady=10,
-    font=("Consolas", 10),)
+    font=('Open Sans', 10),
+)
 
-inputPane.place(
-    x=26, y=110,
-    width=531,
-    height=322)
+editorPane.place(
+    x=13, y=100,
+    width=577,
+    height=324
+)
 
-lexPane_img = PhotoImage(file=f"img/img_textBox1.png")
-lexPane_bg = canvas.create_image(
-    740.5, 353.5,
-    image=lexPane_img)
 
+
+# Lexeme Table Pane
 lexPane = Text(
     bd=0,
-    bg="#2a2247",
+    bg="#E9E7E7",
     highlightthickness=0,
-    fg="white",
+    fg="#211B36",
     padx=10,
     pady=10,
-    font=("Consolas", 10),
-    state="disabled",)
+    font=('Open Sans', 10),
+    state="disabled",
+)
 
 lexPane.place(
-    x=568, y=110,
-    width=345,
-    height=485)
+    x=616, y=100,
+    width=297,
+    height=487,
+)
 
-errorPane_img = PhotoImage(file=f"img/img_textBox2.png")
-errorPane_bg = canvas.create_image(
-    291.5, 521.0,
-    image=errorPane_img)
-
+#Error Pane
 errorPane = Text(
     bd=0,
-    bg="#2a2247",
+    bg="#E9E7E7",
     highlightthickness=0,
-    fg="white",
+    fg="#211B36",
     padx=10,
     pady=10,
-    font=("Consolas", 10),
+    font=('Open Sans', 10),
     state="disabled",)
 
 errorPane.place(
-    x=26, y=445,
-    width=531,
-    height=150)
+    x=13, y=445,
+    width=577,
+    height=152,
+)
 
-background_img = PhotoImage(file=f"img/background.png")
-background = canvas.create_image(
-    469.5, 48.5,
-    image=background_img)
+scrollBar = Scrollbar(editorPane, orient='vertical', command=editorPane.yview)
+scrollBar.pack(side=RIGHT, fill=Y)
 
-# Run Lexical Analyzer Button
-img0 = PhotoImage(file=f"img/img0.png")
-lexButton = Button(
-    image=img0,
-    borderwidth=0,
-    highlightthickness=0,
-    command=run_lex,
-    relief="flat",
-    background="#211b36",
-    activebackground="#211b36")
+#  communicate back to the scrollbar
+editorPane['yscrollcommand'] = scrollBar.set
 
-lexButton.place(
-    x=13, y=52,
-    width=180,
-    height=30)
-
-# Run Semantic Analyzer Button
-img1 = PhotoImage(file=f"img/img1.png")
-semButton = Button(
-    image=img1,
-    borderwidth=0,
-    highlightthickness=0,
-    relief="flat",
-    background="#211b36",
-    activebackground="#211b36")
-
-semButton.place(
-    x=200, y=52,
-    width=200,
-    height=30)
-
-img2 = PhotoImage(file=f"img/img2.png")            # Bind Button
-b2 = Button(
-    image=img2,
-    borderwidth=0,
-    highlightthickness=0,
-    command=refresh,
-    relief="flat",
-    background="#099FD1",
-    activebackground="#099FD1")
-
-b2.place(
-    x=20, y=6,
-    width=100,
-    height=33)
-
-window.resizable(False, False)
-window.title("Bind Compiler")
 window.mainloop()
