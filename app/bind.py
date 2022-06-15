@@ -1,4 +1,5 @@
-import compiler
+import lexical
+import syntax
 from tkinter import *
 from tkinter import constants
 from pyglet import font
@@ -6,11 +7,24 @@ from pyglet import font
 font.add_file('assets/OpenSans-ExtraBold.ttf')
 font.add_file('assets/OpenSans-Regular.ttf')
 
+
 def run_lex():                                  # Run Lexical Analyzer
     inputValue = editorPane.get("1.0", "end-1c")
-    lex = compiler.lexer(inputValue)
+    lex = lexical.lexer(inputValue)
     print_lex(lex.type, lex.value)
     print_error(lex.error)
+    lexPane.config(state="disabled")
+    errorPane.config(state="disabled")
+
+
+def run_syntax():
+    inputValue = editorPane.get("1.0", "end-1c")
+    lexPane.config(state="normal")
+    lexPane.delete('1.0', constants.END)
+    errorPane.config(state="normal")
+    errorPane.delete('1.0', constants.END)
+    syntax_error = syntax.parser(inputValue)
+    print_error(syntax_error)
     lexPane.config(state="disabled")
     errorPane.config(state="disabled")
 
@@ -25,11 +39,9 @@ def print_lex(type, value):                      # Print Text to Lexical Pane
         else:
             lexPane.insert(
                 constants.END, f'{str(value[i]) if len(str(value[i]))<=15 else str(value[i])[:10] + "..."}\t\t\t{str(type[i])}\n')
-            # lexPane.insert(constants.END,f'{"" if type(value[i]) == int else ("" if True else "") }'
-            #                              f'\t\t\t\t{str(type[i])}\n')
 
 
-def print_error(error):                      # Print Text to Error Pane
+def print_error(error):
     errorPane.config(state="normal")
     errorPane.delete('1.0', constants.END)
     for err in range(len(error)):
@@ -94,7 +106,7 @@ runIcon_img = PhotoImage(file=f"assets/run.png")
 lexicalBtn = Button(
     image=runIcon_img,
     compound=LEFT,
-    bg="#CDDCE1", 
+    bg="#CDDCE1",
     borderwidth=0,
     highlightthickness=0,
     activebackground="#211B36",
@@ -117,7 +129,7 @@ lexicalBtn.place(
 syntaxBtn = Button(
     image=runIcon_img,
     compound=LEFT,
-    bg="#CDDCE1", 
+    bg="#CDDCE1",
     borderwidth=0,
     highlightthickness=0,
     activebackground="#211B36",
@@ -126,6 +138,7 @@ syntaxBtn = Button(
     font=('Open Sans', 10),
     activeforeground="#FFFFFF",
     justify="center",
+    command=run_syntax,
 )
 syntaxBtn.place(
     x=170, y=57,
@@ -133,24 +146,6 @@ syntaxBtn.place(
     height=30,
 )
 
-semanticBtn = Button(
-    image=runIcon_img,
-    compound=LEFT,
-    bg="#CDDCE1", 
-    borderwidth=0,
-    highlightthickness=0,
-    activebackground="#211B36",
-    fg="#079AD2",
-    text="  Semantic Analyzer",
-    font=('Open Sans', 10),
-    activeforeground="#FFFFFF",
-    justify="center",
-)
-semanticBtn.place(
-    x=328, y=57,
-    width=148,
-    height=30,
-)
 
 # Editor Pane
 editorPane = Text(
@@ -168,7 +163,6 @@ editorPane.place(
     width=577,
     height=324
 )
-
 
 
 # Lexeme Table Pane
@@ -189,7 +183,7 @@ lexPane.place(
     height=487,
 )
 
-#Error Pane
+# Error Pane
 errorPane = Text(
     bd=0,
     bg="#E9E7E7",
