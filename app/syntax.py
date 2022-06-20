@@ -1,7 +1,7 @@
 import lexical
 
 # First Set
-first_comm = ["comment"]
+first_comm = ["comment", "null"]
 first_global_dec = ["const", "classic", "sheriff",
                     "agent", "roster", "map", "site", "omen"]
 first_const_dec = ["const"]
@@ -43,6 +43,9 @@ first_site_var = ["id"]
 # Follow Set
 
 
+# Predict Set
+
+
 var = "hi"
 
 
@@ -79,3 +82,10 @@ def parser(expression):
 # print(token_type)
 
 # TODO: Add Parser
+
+# Program::= comm global comm bound {comm local comm statements} comm func comm
+#
+# Global_declarations::= Global_declaration Global_declarations | ε
+# Global_declaration::= Const_declaration | Classic_declaration | Sheriff_declaration | Agent_declaration | Roster_declaration | Map_declaration
+# Const_declaration::= const id = value | const id = value, Const_declaration
+# Classic_declaration::= classic id = classic_literal | classic id = neg_classic_literal | classic id = classic_literal, Classic_declaration
