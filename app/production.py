@@ -197,7 +197,7 @@ follow["log_op"] = [")"]
 follow["log_operand"] = [",", ")"]
 follow["ret_stmt"] = [";"]
 follow["in_stmt"] = [";"]
-follow["in_opernd"] = [")"]
+follow["in_operand"] = [")"]
 follow["out_stmt"] = [";"]
 follow["out_operand"] = [")"]
 follow["str_form"] = ["\""]
@@ -246,14 +246,16 @@ cfg_program = ["comm", "global_dec", "comm", "bound",
                "{", "local_dec", "comm", "statement", "comm", "}", "comm", "function_def", "comm"]
 
 
-ctr = 0
-while True:
-    if cfg_program[ctr] in first_set("classic"):
-        print(cfg_program[ctr])
-        print(ctr)
-    ctr += 1
-    if ctr >= len(cfg_program):
-        break
+tokens = ["classic", "const"]
+for i in tokens:
+    ctr = 0
+    while True:
+        if cfg_program[ctr] in first_set(i):
+            print(cfg_program[ctr])
+            print(ctr)
+        ctr += 1
+        if ctr >= len(cfg_program):
+            break
 
 
 # first_set("const")
