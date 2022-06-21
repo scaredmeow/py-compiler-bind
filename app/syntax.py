@@ -1,6 +1,5 @@
 import lexical
-
-var = "hi"
+import production
 
 
 def parser(expression):
@@ -32,14 +31,4 @@ def parser(expression):
     return token_type
 
 
-# token_type = parser(lexemes)
-# print(token_type)
-
-# TODO: Add Parser
-
-# Program::= comm global comm bound {comm local comm statements} comm func comm
-#
-# Global_declarations::= Global_declaration Global_declarations | ε
-# Global_declaration::= Const_declaration | Classic_declaration | Sheriff_declaration | Agent_declaration | Roster_declaration | Map_declaration
-# Const_declaration::= const id = value | const id = value, Const_declaration
-# Classic_declaration::= classic id = classic_literal | classic id = neg_classic_literal | classic id = classic_literal, Classic_declaration
+production.first_set("#")
