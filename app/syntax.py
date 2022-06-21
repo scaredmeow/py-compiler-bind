@@ -1,51 +1,5 @@
 import lexical
 
-# First Set
-first_comm = ["comment", "null"]
-first_global_dec = ["const", "classic", "sheriff",
-                    "agent", "roster", "map", "site", "omen"]
-first_const_dec = ["const"]
-first_const_dec1 = [","]
-first_data_type = ["classic", "sheriff", "agent", "roster", "map"]
-first_value = ["classic_literal", "neg_classic_literal", "sheriff_literal",
-               "neg_sheriff_literal", "agent_literal", "roster_literal", "attack", "defend"]
-first_map_lit = ["attack", "defend"]
-first_conc = ["&"]
-first_var_dec = ["classic", "sheriff", "agent", "roster", "map"]
-first_init = ["="]
-first_var_dec1 = [","]
-first_array_dec = ["classic", "sheriff", "agent", "roster", "map"]
-first_index = ["classic_literal", "id"]
-first_func_stmt = ["id"]
-first_args = ["id", "classic_literal", "neg_classic_literal", "sheriff_literal",
-              "neg_sheriff_literal", "agent_literal", "roster_literal", "attack", "defend"]
-first_variable = ["id"]
-first_more_args = [","]
-first_array_elem = ["id"]
-first_array_index2 = ["["]
-first_array_index3 = ["["]
-first_struct_elem = ["id"]
-first_array_value = ["classic_literal", "neg_classic_literal", "sheriff_literal",
-                     "neg_sheriff_literal", "agent_literal", "roster_literal", "attack", "defend", "{"]
-first_array_value1 = ["classic_literal", "neg_classic_literal", "sheriff_literal",
-                      "neg_sheriff_literal", "agent_literal", "roster_literal", "attack", "defend"]
-first_more_array = [","]
-first_array_value2 = ["{"]
-first_more_array2 = [","]
-first_array_value3 = ["{"]
-first_more_array3 = [","]
-first_struct_dec = ["site"]
-first_site_element = ["classic", "sheriff", "agent", "roster", "map"]
-first_more_element = ["classic", "sheriff", "agent", "roster", "map"]
-first_site_var = ["id"]
-
-
-# Follow Set
-
-
-# Predict Set
-
-
 var = "hi"
 
 
