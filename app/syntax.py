@@ -1,5 +1,5 @@
 import lexical
-import production
+from production import FirstSet, GrammarRules, FollowSet
 
 
 def parser(expression):
@@ -31,4 +31,9 @@ def parser(expression):
     return token_type
 
 
-production.first_set("#")
+f = FirstSet()
+g = GrammarRules()
+fs = FollowSet()
+print(f.first_set("comment"))
+
+print(fs.follow)
