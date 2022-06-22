@@ -152,11 +152,12 @@ class lexer:
 
         for i in range(len(tmpvalue)):
             if i + 1 == len(tmpvalue):
-                self.type.append(tmptype[i])
-                self.value.append(tmpvalue[i])
-                self.error.append(tmperror[i])
-                self.line.append(tmpline[i])
-                self.column.append(tmpcolumn[i])
+                if tmptype[i] != "newline":
+                    self.type.append(tmptype[i])
+                    self.value.append(tmpvalue[i])
+                    self.error.append(tmperror[i])
+                    self.line.append(tmpline[i])
+                    self.column.append(tmpcolumn[i])
                 break
             if (tmpvalue[i] in rdefinition["whitespace"]) or tmptype == "newline":
                 continue

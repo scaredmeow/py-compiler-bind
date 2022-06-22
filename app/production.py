@@ -1,77 +1,75 @@
 class GrammarRules:
     cfg = {}
-    cfg["program"] = ["comm", "global_dec", "comm", "bound",
-                      "{", "local_dec", "comm", "statement", "comm", "}", "comm", "function_def", "comm"]
-    cfg["comm"] = ["#", "ascii"]
+    cfg["program"] = [["comm", "global_dec", "comm", "bound",
+                      "{", "local_dec", "comm", "statement", "comm", "}", "comm", "function_def", "comm"]]
+    cfg["comm"] = [["comment"]]
     cfg["comm"].append(["null"])
-    cfg["global_dec"] = []
-    cfg["global_dec"].append(["const_dec", ";", "global_dec"])
+    cfg["global_dec"] = [["const_dec", ";", "global_dec"]]
     cfg["global_dec"].append(["var_dec", ";", "global_dec"])
     cfg["global_dec"].append(["array_dec", ";", "global_dec"])
     cfg["global_dec"].append(["struct_dec", ";", "global_dec"])
     cfg["global_dec"].append(["func_dec", ";", "global_dec"])
     cfg["global_dec"].append(["null"])
-    cfg["const_dec"] = ["const", "data_type", "id", "=", "value", "const_dec1"]
+    cfg["const_dec"] = [["const", "data_type", "id", "=", "value", "const_dec1"]]
     cfg["const_dec1"] = [[",", "id", "=", "value", "const_dec1"]]
     cfg["const_dec1"].append(["null"])
-    cfg["data_type"] = ["classic"]
-    cfg["data_type"] += ["sheriff"]
-    cfg["data_type"] += ["agent"]
-    cfg["data_type"] += ["roster"]
-    cfg["data_type"] += ["map"]
-    cfg["value"] = ["classic_literal"]
-    cfg["value"] += ["neg_classic_literal"]
-    cfg["value"] += ["sheriff_literal"]
-    cfg["value"] += ["neg_sheriff_literal"]
-    cfg["value"] += ["agent_literal"]
-    cfg["value"] += ["roster_literal"]
-    cfg["value"] += ["roster_literal", "conc"]
-    cfg["value"] += ["map_literal"]
-    cfg["map_literal"] = ["attack"]
-    cfg["map_literal"] += ["defend"]
+    cfg["data_type"] = [["classic"]]
+    cfg["data_type"].append(["sheriff"])
+    cfg["data_type"].append(["agent"])
+    cfg["data_type"].append(["roster"])
+    cfg["data_type"].append(["map"])
+    cfg["value"] = [["classic_literal"]]
+    cfg["value"].append(["neg_classic_literal"])
+    cfg["value"].append(["sheriff_literal"])
+    cfg["value"].append(["neg_sheriff_literal"])
+    cfg["value"].append(["agent_literal"])
+    cfg["value"].append(["roster_literal"])
+    cfg["value"].append(["roster_literal", "conc"])
+    cfg["value"].append(["map_literal"])
+    cfg["map_literal"] = [["attack"]]
+    cfg["map_literal"].append(["defend"])
     cfg["conc"] = [["&", "roster_literal", "conc"]]
     cfg["conc"].append(["null"])
-    cfg["var_dec"] = ["data_type", "id", "init", "var_dec1"]
+    cfg["var_dec"] = [["data_type", "id", "init", "var_dec1"]]
     cfg["var_dec1"] = [[",", "id", "init", "var_dec1"]]
     cfg["var_dec1"].append(["null"])
     cfg["array_dec"] = [["data_type", "arr", "[", "index", "]",
                         "array_index2", "array_index3", "id"]]
     cfg["array_dec"].append(["data_type", "arr", "[", "index", "]",
                              "array_index2", "array_index3", "id", "=", "{", "array_value", "}"])
-    cfg["index"] = ["classic_literal"]
-    cfg["index"] += ["id"]
-    cfg["index"] += ["func_stmt"]
-    cfg["index"] = [cfg["index"]]
+    cfg["index"] = [["classic_literal"]]
+    cfg["index"].append(["id"])
+    cfg["index"].append(["func_stmt"])
     cfg["index"].append(["null"])
     cfg["func_stmt"] = ["id", "(", "args", ")"]
     cfg["args"] = [["variable", "more_args"]]
     cfg["args"].append(["value", "more_args"])
     cfg["args"].append(["null"])
-    cfg["variable"] = ["id"]
-    cfg["variable"] += ["array_elem"]
-    cfg["variable"] += ["struct_elem"]
+    cfg["variable"] = [["id"]]
+    cfg["variable"].append(["array_elem"])
+    cfg["variable"].append(["struct_elem"])
     cfg["more_args"] = [[",", "variable", "more_args"]]
     cfg["more_args"].append([",", "value", "more_args"])
     cfg["more_args"].append(["null"])
-    cfg["array_elem"] = ["id", "[", "index", "]", "array_index2", "array_index3"]
+    cfg["array_elem"] = [["id", "[", "index", "]", "array_index2", "array_index3"]]
     cfg["array_index2"] = [["[", "index", "]"]]
     cfg["array_index2"].append(["null"])
     cfg["array_index3"] = [["[", "index", "]"]]
     cfg["array_index3"].append(["null"])
-    cfg["struct_elem"] = ["variable", ".", "variable"]
-    cfg["array_value"] = ["array_value1"]
-    cfg["array_value"] += ["array_value2"]
-    cfg["array_value"] += ["array_value3"]
-    cfg["array_value1"] = ["value", "more_array"]
+    cfg["struct_elem"] = [["variable", ".", "variable"]]
+    cfg["array_value"] = [["array_value1"]]
+    cfg["array_value"].append(["array_value2"])
+    cfg["array_value"].append(["array_value3"])
+    cfg["array_value1"] = [["value", "more_array"]]
     cfg["more_array"] = [[",", "value", "more_array"]]
     cfg["more_array"].append(["null"])
-    cfg["array_value2"] = ["{", "array_value1", "}", "more_array2"]
+    cfg["array_value2"] = [["{", "array_value1", "}", "more_array2"]]
     cfg["more_array2"] = [[",", "array_value2", "more_array2"]]
     cfg["more_array2"].append(["null"])
-    cfg["array_value3"] = ["{", "array_value2", "}", "more_array3"]
+    cfg["array_value3"] = [["{", "array_value2", "}", "more_array3"]]
     cfg["more_array3"] = [[",", "array_value3", "more_array3"]]
     cfg["more_array3"].append(["null"])
-    cfg["struct_dec"] = ["site", "id", "{", "site_element", "}", "site_var"]
+    cfg["struct_dec"] = [["site", "id", "{", "site_element", "}", "site_var"]]
     cfg["site_element"] = [["var_dec", ";", "more_element"]]
     cfg["site_element"].append(["array_dec", ";", "more_element"])
     cfg["more_element"] = [["site_element"]]
@@ -81,9 +79,9 @@ class GrammarRules:
     cfg["site_var"].append(["null"])
     cfg["more_var_site"] = [[",", "id", "more_var_site"]]
     cfg["more_var_site"].append(["null"])
-    cfg["func_dec"] = ["func_type", "id", "(", "param", ")"]
-    cfg["func_type"] = ["data_type"]
-    cfg["func_type"] += ["omen"]
+    cfg["func_dec"] = [["func_type", "id", "(", "param", ")"]]
+    cfg["func_type"] = [["data_type"]]
+    cfg["func_type"].append(["omen"])
     cfg["param"] = [["data_type", "id", "param1"]]
     cfg["param"].append(["null"])
     cfg["param1"] = [[",", "data_type", "id", "param1"]]
@@ -110,26 +108,26 @@ class GrammarRules:
     cfg["statement1"].append(["condi_stmt"])
     cfg["statement1"].append(["loop_stmt"])
     cfg["statement1"].append(["func_stmt"])
-    cfg["expre_stmt"] = ["assign_expr"]
-    cfg["expre_stmt"] += ["una_expr"]
+    cfg["expre_stmt"] = [["assign_expr"]]
+    cfg["expre_stmt"].append(["una_expr"])
     cfg["assign_expr"] = ["variable", "assign_op", "assign_operand"]
-    cfg["assign_op"] = ["="]
-    cfg["assign_op"] += ["=+"]
-    cfg["assign_op"] += ["=-"]
-    cfg["assign_op"] += ["=*"]
-    cfg["assign_op"] += ["=/"]
-    cfg["assign_op"] += ["=^"]
-    cfg["assign_op"] += ["=//"]
-    cfg["assign_op"] += ["=%"]
-    cfg["assign_operand"] = ["variable"]
-    cfg["assign_operand"] += ["value"]
-    cfg["assign_operand"] += ["expre_stmt1"]
-    cfg["assign_operand"] += ["func_stmt"]
-    cfg["expre_stmt1"] = ["arith_expr"]
-    cfg["expre_stmt1"] += ["rela_expr"]
-    cfg["expre_stmt1"] += ["log_expr"]
-    cfg["expre_stmt1"] += ["una_expr"]
-    cfg["arith_expr"] = ["arith_operand", "arith_op", "arith_operand"]
+    cfg["assign_op"] = [["="]]
+    cfg["assign_op"].append(["=+"])
+    cfg["assign_op"].append(["=-"])
+    cfg["assign_op"].append(["=*"])
+    cfg["assign_op"].append(["=/"])
+    cfg["assign_op"].append(["=^"])
+    cfg["assign_op"].append(["=//"])
+    cfg["assign_op"].append(["=%"])
+    cfg["assign_operand"] = [["variable"]]
+    cfg["assign_operand"].append(["value"])
+    cfg["assign_operand"].append(["expre_stmt1"])
+    cfg["assign_operand"].append(["func_stmt"])
+    cfg["expre_stmt1"] = [["arith_expr"]]
+    cfg["expre_stmt1"].append(["rela_expr"])
+    cfg["expre_stmt1"].append(["log_expr"])
+    cfg["expre_stmt1"].append(["una_expr"])
+    cfg["arith_expr"] = [["arith_operand", "arith_op", "arith_operand"]]
     cfg["arith_operand"] = [["variable"]]
     cfg["arith_operand"].append(["num_val"])
     cfg["arith_operand"].append(["variable"])
@@ -143,43 +141,44 @@ class GrammarRules:
     cfg["num_val"].append(["neg_sheriff_literal"])
     cfg["una_expr"] = [["una_op", "variable"]]
     cfg["una_expr"].append(["variable", "una_op"])
-    cfg["una_op"] = ["++"]
-    cfg["una_op"] += ["--"]
-    cfg["arith_op"] = ["+"]
-    cfg["arith_op"] += ["-"]
-    cfg["arith_op"] += ["*"]
-    cfg["arith_op"] += ["^"]
-    cfg["arith_op"] += ["/"]
-    cfg["arith_op"] += ["//"]
-    cfg["arith_op"] += ["%"]
-    cfg["rela_expr"] = ["rela_operand", "rela_op", "rela_operand"]
-    cfg["rela_operand"] = ["variable"]
-    cfg["rela_operand"] += ["num_val"]
-    cfg["rela_operand"] += ["arith_expr"]
-    cfg["rela_operand"] += ["una_expr"]
-    cfg["rela_op"] = ["=="]
-    cfg["rela_op"] += ["=!"]
-    cfg["rela_op"] += ["<"]
-    cfg["rela_op"] += [">"]
-    cfg["rela_op"] += ["=>"]
-    cfg["rela_op"] += ["=<"]
-    cfg["log_expr"] = ["log_expr1"]
-    cfg["log_expr"] += ["log_expr2"]
-    cfg["log_expr1"] = ["log_op", "(", "log_operand", ",", "log_operand", ")"]
-    cfg["log_expr2"] = ["n", "(", "log_operand", ")"]
-    cfg["log_op"] = ["and"]
-    cfg["log_op"] += ["or"]
-    cfg["log_operand"] = ["log_expr"]
-    cfg["log_operand"] += ["rela_expr"]
-    cfg["log_operand"] += ["map_literal"]
-    cfg["log_operand"] += ["id"]
-    cfg["ret_stmt"] = ["defuse", "ret_operand"]
-    cfg["ret_operand"] = ["id"]
-    cfg["ret_operand"] += ["value"]
-    cfg["ret_operand"] += ["expr_stmt1"]
-    cfg["in_stmt"] = ["aim", "(", "in_operand", ")"]
-    cfg["in_operand"] = ["variable"]
-    cfg["out_stmt"] = ["shoot", "(", "out_operand", ")"]
+    cfg["una_op"] = [["++"]]
+    cfg["una_op"].append(["--"])
+    cfg["arith_op"] = [["+"]]
+    cfg["arith_op"].append(["-"])
+    cfg["arith_op"].append(["*"])
+    cfg["arith_op"].append(["^"])
+    cfg["arith_op"].append(["/"])
+    cfg["arith_op"].append(["//"])
+    cfg["arith_op"].append(["%"])
+    cfg["rela_expr"] = [["rela_operand", "rela_op", "rela_operand"]]
+    cfg["rela_operand"] = [["variable"]]
+    cfg["rela_operand"].append(["num_val"])
+    cfg["rela_operand"].append(["arith_expr"])
+    cfg["rela_operand"].append(["una_expr"])
+    cfg["rela_op"] = [["=="]]
+    cfg["rela_op"].append(["=!"])
+    cfg["rela_op"].append(["<"])
+    cfg["rela_op"].append([">"])
+    cfg["rela_op"].append(["=>"])
+    cfg["rela_op"].append(["=<"])
+    cfg["log_expr"] = [["log_expr1"]]
+    cfg["log_expr"].append(["log_expr2"])
+    cfg["log_expr1"] = [
+        ["log_op", "(", "log_operand", ",", "log_operand", ")"]]
+    cfg["log_expr2"] = [["n", "(", "log_operand", ")"]]
+    cfg["log_op"] = [["and"]]
+    cfg["log_op"].append(["or"])
+    cfg["log_operand"] = [["log_expr"]]
+    cfg["log_operand"].append(["rela_expr"])
+    cfg["log_operand"].append(["map_literal"])
+    cfg["log_operand"].append(["id"])
+    cfg["ret_stmt"] = [["defuse", "ret_operand"]]
+    cfg["ret_operand"] = [["id"]]
+    cfg["ret_operand"].append(["value"])
+    cfg["ret_operand"].append(["expr_stmt1"])
+    cfg["in_stmt"] = [["aim", "(", "in_operand", ")"]]
+    cfg["in_operand"] = [["variable"]]
+    cfg["out_stmt"] = [["shoot", "(", "out_operand", ")"]]
     cfg["out_operand"] = [["variable"]]
     cfg["out_operand"].append(["\"", "roster_literal", "\""])
     cfg["out_operand"].append(["func_stmt"])
@@ -189,45 +188,50 @@ class GrammarRules:
     cfg["str_form"].append(["null"])
     cfg["str_var"] = [["{", "id", "}"]]
     cfg["str_var"].append(["null"])
-    cfg["condi_stmt"] = ["if_stmt"]
-    cfg["condi_stmt"] += ["switch_stmt"]
-    cfg["if_stmt"] = ["if", "(", "condition", ")",
-                      "{", "statements", "}", "if_stmt1", "if_stmt2"]
-    cfg["condition"] = ["map_literal"]
-    cfg["condition"] += ["rela_expr"]
-    cfg["condition"] += ["log_expr"]
+    cfg["condi_stmt"] = [["if_stmt"]]
+    cfg["condi_stmt"].append(["switch_stmt"])
+    cfg["if_stmt"] = [["if", "(", "condition", ")",
+                      "{", "statements", "}", "if_stmt1", "if_stmt2"]]
+    cfg["condition"] = [["map_literal"]]
+    cfg["condition"].append(["rela_expr"])
+    cfg["condition"].append(["log_expr"])
     cfg["if_stmt1"] = [["elif", "(", "condition",
                        "{", "statements", "}", "if_stmt1", "if_stmt2"]]
     cfg["if_stmt1"].append(["null"])
     cfg["if_stmt2"] = [["else", "{", "statements", "}"]]
     cfg["if_stmt2"].append(["null"])
-    cfg["switch_stmt"] = ["switch", "(", "variable", ")", "{", "vote", "case_literal", ":", "statements",
-                          "kill", ";", "more_votes", "base", ":", "statements", "break"]
-    cfg["case_literal"] = ["classic_literal"]
-    cfg["case_literal"] += ["agent_literal"]
+    cfg["switch_stmt"] = [["switch", "(", "variable", ")", "{", "vote", "case_literal", ":", "statements",
+                          "kill", ";", "more_votes", "base", ":", "statements", "break"]]
+    cfg["case_literal"] = [["classic_literal"]]
+    cfg["case_literal"].append(["agent_literal"])
     cfg["more_votes"] = [["vote", "case_literal", ":",
                          "statements", "kill", ";", "more_votes"]]
     cfg["more_votes"].append(["null"])
     cfg["break"] = [["kill", ";"]]
     cfg["break"].append(["null"])
-    cfg["loop_stmt"] = ["for_stmt"]
-    cfg["loop_stmt"] += ["while_stmt"]
-    cfg["loop_stmt"] += ["dowhile_stmt"]
-    cfg["for_stmt"] = ["for", "(", "for_init", ";", "loop_cond",
-                       ";", "una_expr", ")", "{", "statements", "break_con", "}"]
-    cfg["for_init"] = ["id", "=", "classic_literal"]
-    cfg["loop_cond"] = ["rela_expr"]
-    cfg["loop_cond"] += ["log_expr"]
+    cfg["loop_stmt"] = [["for_stmt"]]
+    cfg["loop_stmt"].append(["while_stmt"])
+    cfg["loop_stmt"].append(["dowhile_stmt"])
+    cfg["for_stmt"] = [["for", "(", "for_init", ";", "loop_cond",
+                       ";", "una_expr", ")", "{", "statements", "break_con", "}"]]
+    cfg["for_init"] = [["id", "=", "classic_literal"]]
+    cfg["loop_cond"] = [["rela_expr"]]
+    cfg["loop_cond"].append(["log_expr"])
     cfg["break_con"] = [["revive"]]
     cfg["break_con"].append(["kill"])
     cfg["break_con"].append(["null"])
-    cfg["while_stmt"] = ["while", "(", "loop_cond", ")",
-                         "{", "statements", "break_con", "}"]
-    cfg["dowhile_stmt"] = [
-        "do", "{", "statements", "break_con", "}", "while", "(", "loop_cond", ")", ";"]
+    cfg["while_stmt"] = [["while", "(", "loop_cond", ")",
+                         "{", "statements", "break_con", "}"]]
+    cfg["dowhile_stmt"] = [[
+        "do", "{", "statements", "break_con", "}", "while", "(", "loop_cond", ")", ";"]]
     cfg["function_def"] = [["plant", "func_type", "id",
                            "(", "param", ")", "{", "local_dec", "statements", "}"]]
     cfg["function_def"].append(["null"])
+    non_terminal = list(cfg.keys())
+
+    def __init__(self) -> None:
+        self.cfg = GrammarRules.cfg
+        self.non_terminal = GrammarRules.non_terminal
 
 
 class FirstSet:
@@ -344,12 +348,14 @@ class FirstSet:
     def __init__(self) -> None:
         self.first = FirstSet.first
 
-    def first_set(self, token):
-        non_terminals = []
-        for key, value in self.first.items():
-            if token in value:
-                non_terminals.append(key)
-        return non_terminals
+    def first_set(self, token, production) -> bool:
+        try:
+            if token in self.first[production]:
+                return True
+            return False
+        except Exception as e:
+            print(e)
+            return False
 
 
 class FollowSet:
@@ -466,6 +472,12 @@ class FollowSet:
                               "++", "--", 'defuse', "aim", "shoot", "if", "switch", "for", "while", "do", "}", "kill", "revive"]
     follow["function_def"] = ["#", "$"]
 
+    def __init__(self) -> None:
+        self.follow = FollowSet.follow
+
+    def follow_set(self):
+        pass
+
 
 # def follow_set(token):
 #     pass
@@ -482,3 +494,6 @@ class FollowSet:
 #         ctr += 1
 #         if ctr >= len(cfg["program):
 #             break
+
+
+print(FirstSet().first_set("bounda", "global_dec"))
