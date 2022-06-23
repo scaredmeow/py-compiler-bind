@@ -31,6 +31,8 @@ class GrammarRules:
     cfg["conc"] = [["&", "roster_literal", "conc"]]
     cfg["conc"].append(["null"])
     cfg["var_dec"] = [["data_type", "id", "init", "var_dec1"]]
+    cfg["init"] = [["=", "value"]]
+    cfg["init"].append(["null"])
     cfg["var_dec1"] = [[",", "id", "init", "var_dec1"]]
     cfg["var_dec1"].append(["null"])
     cfg["array_dec"] = [["data_type", "arr", "[", "index", "]",
