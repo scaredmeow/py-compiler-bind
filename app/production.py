@@ -238,22 +238,22 @@ class FirstSet:
     first = {}
     first["comm"] = ["comment", "null"]
     first["global_dec"] = ["const", "classic", "sheriff",
-                           "agent", "roster", "map", "site", "omen"]
+                           "agent", "roster", "map", "site", "omen", "null"]
     first["const_dec"] = ["const"]
-    first["const_dec1"] = [","]
+    first["const_dec1"] = [",", "null"]
     first["data_type"] = ["classic", "sheriff", "agent", "roster", "map"]
-    first["value"] = ["classic_literal", "neg_classic_literal", "sheriff_literal",
+    first["value"] = ["classic_literaddddl", "neg_classic_literal", "sheriff_literal",
                       "neg_sheriff_literal", "agent_literal", "roster_literal", "attack", "defend"]
     first["map_lit"] = ["attack", "defend"]
-    first["conc"] = ["&"]
+    first["conc"] = ["&", "null"]
     first["var_dec"] = ["classic", "sheriff", "agent", "roster", "map"]
-    first["init"] = ["="]
-    first["var_dec1"] = [","]
+    first["init"] = ["=", "null"]
+    first["var_dec1"] = [",", "null"]
     first["array_dec"] = ["classic", "sheriff", "agent", "roster", "map"]
-    first["index"] = ["classic_literal", "id"]
+    first["index"] = ["classic_literal", "id", "null"]
     first["func_stmt"] = ["id"]
     first["args"] = ["id", "classic_literal", "neg_classic_literal", "sheriff_literal",
-                     "neg_sheriff_literal", "agent_literal", "roster_literal", "attack", "defend"]
+                     "neg_sheriff_literal", "agent_literal", "roster_literal", "attack", "defend", "null"]
     first["variable"] = ["id"]
     first["more_args"] = [","]
     first["array_elem"] = ["id"]
@@ -351,6 +351,7 @@ class FirstSet:
     def first_set(self, token, production) -> bool:
         try:
             if token in self.first[production]:
+                print(f"{token} is in the first set of {production}")
                 return True
             return False
         except Exception as e:
@@ -496,4 +497,4 @@ class FollowSet:
 #             break
 
 
-print(FirstSet().first_set("bounda", "global_dec"))
+# print(FirstSet().first_set("bounda", "global_dec"))
