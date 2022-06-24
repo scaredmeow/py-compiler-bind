@@ -1,7 +1,7 @@
 class GrammarRules:
     cfg = {}
     cfg["program"] = [["comm", "global_dec", "comm", "bound",
-                      "{", "local_dec", "comm", "statement", "comm", "}", "comm", "function_def", "comm"]]
+                      "{", "local_dec", "comm", "statements", "comm", "}", "comm", "function_def", "comm"]]
     cfg["comm"] = [["comment"]]
     cfg["comm"].append(["null"])
     cfg["global_dec"] = [["const_dec", ";", "global_dec"]]
@@ -182,7 +182,7 @@ class GrammarRules:
     cfg["in_operand"] = [["variable"]]
     cfg["out_stmt"] = [["shoot", "(", "out_operand", ")"]]
     cfg["out_operand"] = [["variable"]]
-    cfg["out_operand"].append(["\"", "roster_literal", "\""])
+    cfg["out_operand"].append(["roster_literal"])
     cfg["out_operand"].append(["func_stmt"])
     cfg["out_operand"].append(["expre_stmt1"])
     cfg["out_operand"].append(["fs", "\"", "str_form", "\""])
@@ -244,9 +244,9 @@ class FirstSet:
     first["const_dec"] = ["const"]
     first["const_dec1"] = [",", "null"]
     first["data_type"] = ["classic", "sheriff", "agent", "roster", "map"]
-    first["value"] = ["classic_literaddddl", "neg_classic_literal", "sheriff_literal",
+    first["value"] = ["classic_literal", "neg_classic_literal", "sheriff_literal",
                       "neg_sheriff_literal", "agent_literal", "roster_literal", "attack", "defend"]
-    first["map_lit"] = ["attack", "defend"]
+    first["map_literal"] = ["attack", "defend"]
     first["conc"] = ["&", "null"]
     first["var_dec"] = ["classic", "sheriff", "agent", "roster", "map"]
     first["init"] = ["=", "null"]
@@ -257,24 +257,25 @@ class FirstSet:
     first["args"] = ["id", "classic_literal", "neg_classic_literal", "sheriff_literal",
                      "neg_sheriff_literal", "agent_literal", "roster_literal", "attack", "defend", "null"]
     first["variable"] = ["id"]
-    first["more_args"] = [","]
+    first["more_args"] = [",", "null"]
     first["array_elem"] = ["id"]
-    first["array_index2"] = ["["]
-    first["array_index3"] = ["["]
+    first["array_index2"] = ["[", "null"]
+    first["array_index3"] = ["[", "null"]
     first["struct_elem"] = ["id"]
     first["array_value"] = ["classic_literal", "neg_classic_literal", "sheriff_literal",
                             "neg_sheriff_literal", "agent_literal", "roster_literal", "attack", "defend", "{"]
     first["array_value1"] = ["classic_literal", "neg_classic_literal", "sheriff_literal",
                              "neg_sheriff_literal", "agent_literal", "roster_literal", "attack", "defend"]
-    first["more_array"] = [","]
+    first["more_array"] = [",", "null"]
     first["array_value2"] = ["{"]
-    first["more_array2"] = [","]
+    first["more_array2"] = [",", "null"]
     first["array_value3"] = ["{"]
-    first["more_array3"] = [","]
+    first["more_array3"] = [",", "null"]
     first["struct_dec"] = ["site"]
     first["site_element"] = ["classic", "sheriff", "agent", "roster", "map"]
-    first["more_element"] = ["classic", "sheriff", "agent", "roster", "map"]
-    first["site_var"] = ["id"]
+    first["more_element"] = ["classic", "sheriff",
+                             "agent", "roster", "map", "null"]
+    first["site_var"] = ["id", "null"]
     first["more_var_site"] = [",", "null"]
     first["func_dec"] = ["classic", "sheriff",
                          "agent", "roster", "map", "omen"]
@@ -286,9 +287,9 @@ class FirstSet:
                           "roster", "map", "const", "site", "null"]
     first["struct_init"] = ["site"]
     first["more_struct"] = [",", "null"]
-    first["statements"] = ["#", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id", "++", "--", "defuse",
+    first["statements"] = ["comment", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id", "++", "--", "defuse",
                            "shoot", "if", "switch", "for", "while", "do", "null"]
-    first["statement1"] = ["#", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id", "++", "--", "defuse",
+    first["statement1"] = ["comment", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id", "++", "--", "defuse",
                            "shoot", "if", "switch", "for", "while", "do"]
     first["expre_stmt"] = ["id", "++," "--"]
     first["assign_expr"] = ["id"]
@@ -323,7 +324,7 @@ class FirstSet:
     first["in_stmt"] = ["aim"]
     first["in_operand"] = ["id"]
     first["out_stmt"] = ["shoot"]
-    first["out_operand"] = ["id", "\"", "classic_literal", "neg_classic_literal",
+    first["out_operand"] = ["id", "roster_literal", "classic_literal", "neg_classic_literal",
                             "sheriff_literal", "neg_sheriff_literal", "++", "--", "(", "and", "or", "n", "fs"]
     first["str_form"] = ["{", "null"]
     first["str_var"] = ["{", "null"]
@@ -353,19 +354,17 @@ class FirstSet:
     def first_set(self, token, production) -> bool:
         try:
             if token in self.first[production]:
-                print(f"{token} is in the first set of {production}")
                 return True
             return False
         except Exception as e:
-            print(e)
             return False
 
 
 class FollowSet:
     follow = {}
-    follow["comm"] = ["const", "classic", "sheriff", "agent", "roster", "map", "site", "omen", "#", "bound",  "id",  "++", '--',
+    follow["comm"] = ["const", "classic", "sheriff", "agent", "roster", "map", "site", "omen", "comment", "bound",  "id",  "++", '--',
                       "defuse", "aim", "shoot", "if", "switch", "for", "while", "do", "}", "plant", "$", "kill", "revive"]
-    follow["global_dec"] = ["#", "bound"]
+    follow["global_dec"] = ["comment", "bound"]
     follow["const_dec"] = [";"]
     follow["const_dec1"] = [";"]
     follow["data_type"] = ["id", "arr"]
@@ -407,12 +406,12 @@ class FollowSet:
     follow["func_type"] = ["id"]
     follow["param"] = [")"]
     follow["param1"] = [")"]
-    follow["local_dec"] = ["#",  "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
+    follow["local_dec"] = ["comment",  "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
                            "++", "--", "defuse", "aim", "shoot", "if", "switch", "for", "while", "do", "}", "kill", "revive"]
     follow["struct_init"] = [";"]
     follow["more_struct"] = ["}"]
-    follow["statements"] = ["#", "kill", "revive"]
-    follow["statement1"] = ["#",  "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
+    follow["statements"] = ["comment", "kill", "revive"]
+    follow["statement1"] = ["comment",  "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
                             "++", "--", "defuse", "aim", "shoot", "if", "switch", "for", "while", "do", "}", "kill", "revive"]
     follow["expre_stmt"] = [";"]
     follow["assign_expr"] = [";"]
@@ -448,38 +447,43 @@ class FollowSet:
     follow["out_operand"] = [")"]
     follow["str_form"] = ["\""]
     follow["str_var"] = ["roster_literal", "{", "\""]
-    follow["condi_stmt"] = ["#", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
+    follow["condi_stmt"] = ["comment", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
                             "++", "--", 'defuse', "aim", "shoot", "if", "switch", "for", "while", "do", "}", "kill", "revive"]
-    follow["if_stmt"] = ["#", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
+    follow["if_stmt"] = ["comment", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
                          "++", "--", 'defuse', "aim", "shoot", "if", "switch", "for", "while", "do", "}", "kill", "revive"]
     follow["condition"] = [")"]
-    follow["if_stmt1"] = ["else", "#", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
+    follow["if_stmt1"] = ["else", "comment", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
                           "++", "--", 'defuse', "aim", "shoot", "if", "switch", "for", "while", "do", "}", "kill", "revive"]
-    follow["if_stmt2"] = ["else", "#", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
+    follow["if_stmt2"] = ["else", "comment", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
                           "++", "--", 'defuse', "aim", "shoot", "if", "switch", "for", "while", "do", "}", "kill", "revive"]
-    follow["switch_stmt"] = ["#", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
+    follow["switch_stmt"] = ["comment", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
                              "++", "--", 'defuse', "aim", "shoot", "if", "switch", "for", "while", "do", "}", "kill", "revive"]
     follow["case_literal"] = [":"]
     follow["more_votes"] = ["base"]
     follow["break"] = ["}"]
-    follow["loop_stmt"] = ["#", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
+    follow["loop_stmt"] = ["comment", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
                            "++", "--", 'defuse', "aim", "shoot", "if", "switch", "for", "while", "do", "}", "kill", "revive"]
-    follow["for_stmt"] = ["#", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
+    follow["for_stmt"] = ["comment", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
                           "++", "--", 'defuse', "aim", "shoot", "if", "switch", "for", "while", "do", "}", "kill", "revive"]
     follow["for_init"] = [";"]
     follow["loop_cond"] = [";", ")"]
     follow["break_con"] = ["}"]
-    follow["while_statement"] = ["#", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
+    follow["while_statement"] = ["comment", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
                                  "++", "--", 'defuse', "aim", "shoot", "if", "switch", "for", "while", "do", "}", "kill", "revive"]
-    follow["dowhile_stmt"] = ["#", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
+    follow["dowhile_stmt"] = ["comment", "const", "classic", "sheriff", "agent", "roster", "map", "site", "id",
                               "++", "--", 'defuse', "aim", "shoot", "if", "switch", "for", "while", "do", "}", "kill", "revive"]
-    follow["function_def"] = ["#", "$"]
+    follow["function_def"] = ["comment", "$"]
 
     def __init__(self) -> None:
         self.follow = FollowSet.follow
 
-    def follow_set(self):
-        pass
+    def follow_set(self, token, production) -> bool:
+        try:
+            if token in self.follow[production]:
+                return True
+            return False
+        except Exception as e:
+            return False
 
 
 # def follow_set(token):
