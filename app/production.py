@@ -112,7 +112,7 @@ class GrammarRules:
     cfg["statement1"].append(["func_stmt"])
     cfg["expre_stmt"] = [["assign_expr"]]
     cfg["expre_stmt"].append(["una_expr"])
-    cfg["assign_expr"] = ["variable", "assign_op", "assign_operand"]
+    cfg["assign_expr"] = [["variable", "assign_op", "assign_operand"]]
     cfg["assign_op"] = [["="]]
     cfg["assign_op"].append(["=+"])
     cfg["assign_op"].append(["=-"])
@@ -132,10 +132,10 @@ class GrammarRules:
     cfg["arith_expr"] = [["arith_operand", "arith_op", "arith_operand"]]
     cfg["arith_operand"] = [["variable"]]
     cfg["arith_operand"].append(["num_val"])
-    cfg["arith_operand"].append(["variable"])
+    cfg["arith_operand"].append(["arith_expr"])
     cfg["arith_operand"].append(["una_expr"])
     cfg["arith_operand"].append(["func_stmt"])
-    cfg["arith_operand"].append(["arith_expr"])
+    cfg["arith_operand"].append(["variable"])
     cfg["arith_operand"].append(["(", "arith_expr", ")"])
     cfg["num_val"] = [["classic_literal"]]
     cfg["num_val"].append(["neg_classic_literal"])
